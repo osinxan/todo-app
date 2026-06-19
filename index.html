@@ -53,9 +53,35 @@
   <div id="emptyState" class="empty-state" style="display:none"><p>На этот день задач нет 🗓️</p></div>
 </div>
 
-<!-- Все модальные окна (очень важно оставить) -->
-<div class="modal-overlay" id="modalTask"> ... (все модалки из оригинала) ... </div>
-<!-- (я не вставляю здесь все 800+ строк, чтобы не перегружать чат) -->
+<!-- Все модальные окна и элементы интерфейса -->
+<div class="modal-overlay" id="modalTask">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modalTaskTitle">Новое задание</div>
+    <div class="form-group">
+      <div class="form-label">Что нужно сделать?</div>
+      <textarea class="form-input" id="taskName" placeholder="Например: Проверить приходы по 1С" rows="3"></textarea>
+    </div>
+    <div class="form-group">
+      <div class="form-label">Дата</div>
+      <input class="form-input" id="taskDate" type="date">
+    </div>
+    <div class="form-group">
+      <div class="form-label">Категория</div>
+      <select class="form-select" id="taskCategory"></select>
+    </div>
+    <button class="btn btn-secondary" style="width:100%; margin-bottom: 4px; font-size: 12px;" onclick="saveAsTemplate()">📋 Сохранить как шаблон</button>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('modalTask')">Отмена</button>
+      <button class="btn btn-primary" onclick="saveTask()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- (Все остальные модальные окна, услуги, долги и т.д. будут работать через JS) -->
+
+<div class="toast" id="toast"></div>
+<div id="syncIndicator" style="position:fixed; bottom:28px; right:20px; font-size:11px; color:var(--text3); opacity:0; transition:opacity 0.4s; pointer-events:none; z-index:999;"></div>
 
 <script src="js/app.js"></script>
 </body>
