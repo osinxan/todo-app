@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мои Задачи</title>
-    <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Мої Задачі</title>
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
@@ -53,7 +53,6 @@
   <div id="emptyState" class="empty-state" style="display:none"><p>На этот день задач нет 🗓️</p></div>
 </div>
 
-<!-- Все модальные окна и элементы интерфейса -->
 <div class="modal-overlay" id="modalTask">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -68,7 +67,8 @@
     </div>
     <div class="form-group">
       <div class="form-label">Категория</div>
-      <select class="form-select" id="taskCategory"></select>
+      <select class="form-select" id="taskCategory">
+      </select>
     </div>
     <button class="btn btn-secondary" style="width:100%; margin-bottom: 4px; font-size: 12px;" onclick="saveAsTemplate()">📋 Сохранить как шаблон</button>
     <div class="modal-actions">
@@ -78,10 +78,311 @@
   </div>
 </div>
 
-<!-- (Все остальные модальные окна, услуги, долги и т.д. будут работать через JS) -->
+<div class="modal-overlay" id="modalTransfer">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Перенос заданий</div>
+    <div class="form-group">
+      <div class="form-label">На какой день перенести?</div>
+      <input class="form-input" id="transferTargetDate" type="date">
+    </div>
+    <div class="checkbox-row" onclick="toggleTransferCheck()">
+      <div class="custom-checkbox" id="transferCheckUI"></div>
+      <div>
+        <div style="font-size: 14px; font-weight: 500;">Удалить из текущего дня</div>
+        <div style="font-size: 11px; color: var(--text2); margin-top: 2px;">Если убрать крыжик, задания просто скопируются</div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('modalTransfer')">Отмена</button>
+      <button class="btn btn-orange" onclick="executeTransfer()">Выполнить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Перенос одного задания -->
+<div class="modal-overlay" id="modalMoveOne" style="z-index:700">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">↷ Перенести задание</div>
+    <p id="moveOneTaskName" style="font-size: 13px; color: var(--text2); margin-bottom: 16px; font-style: italic;"></p>
+    <div class="form-group">
+      <div class="form-label">На какой день перенести?</div>
+      <input class="form-input" id="moveOneTargetDate" type="date">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('modalMoveOne')">Отмена</button>
+      <button class="btn btn-orange" onclick="executeMoveOne()">Перенести</button>
+    </div>
+  </div>
+</div>
+
+<!-- Шаблоны -->
+<div class="modal-overlay" id="modalTemplates">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">📋 Шаблоны заданий</div>
+
+    <div id="templatesList"></div>
+    <div class="modal-actions" style="margin-top: 16px;">
+      <button class="btn btn-secondary" onclick="closeModal('modalTemplates')">Закрыть</button>
+      <button class="btn btn-secondary" onclick="openAddFolder()">+ Папка</button>
+      <button class="btn btn-primary" onclick="applyMatchingFolders()">➕ Добавить подходящие</button>
+    </div>
+  </div>
+</div>
+
+<!-- Категории -->
+<div class="modal-overlay" id="modalCategories" style="z-index:550">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🏷️ Категории</div>
+    <div style="display:flex; align-items:center; justify-content:flex-end; margin-bottom:10px;">
+      <button class="btn btn-primary btn-sm" onclick="openAddCategory()">+ Категория</button>
+    </div>
+    <div id="categoryManageList" class="cat-manage-list"></div>
+    <div class="modal-actions" style="margin-top: 16px;">
+      <button class="btn btn-secondary" onclick="closeModal('modalCategories')">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<!-- Создание/редактирование категории -->
+<div class="modal-overlay" id="modalCategory" style="z-index:600">
+  <div class="modal">
+    <div class="modal-title" id="modalCategoryTitle">Новая категория</div>
+    <div class="form-group">
+      <div class="form-label">Название</div>
+      <input class="form-input" id="categoryName" placeholder="Например: Работа">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('modalCategory')">Отмена</button>
+      <button class="btn btn-primary" onclick="saveCategory()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Создание/редактирование папки -->
+<div class="modal-overlay" id="modalFolder" style="z-index:600">
+  <div class="modal">
+    <div class="modal-title" id="modalFolderTitle">Новая папка</div>
+    <div class="form-group">
+      <div class="form-label">Название папки</div>
+      <input class="form-input" id="folderName" placeholder="Например: Каждая среда">
+    </div>
+    <div class="form-group">
+      <div class="form-label">Расписание</div>
+      <select class="form-select" id="folderRepeat" onchange="onFolderRepeatChange()">
+        <option value="manual">Вручную</option>
+        <option value="daily">Каждый день</option>
+        <option value="weekly">По дням недели</option>
+        <option value="monthly">Каждое N-е число</option>
+      </select>
+    </div>
+    <div class="form-group" id="folderWeekdayGroup" style="display:none">
+      <div class="form-label">Дни недели</div>
+      <div class="weekday-picker">
+        <button type="button" class="weekday-btn" data-day="1" onclick="toggleWeekday(this)">Пн</button>
+        <button type="button" class="weekday-btn" data-day="2" onclick="toggleWeekday(this)">Вт</button>
+        <button type="button" class="weekday-btn" data-day="3" onclick="toggleWeekday(this)">Ср</button>
+        <button type="button" class="weekday-btn" data-day="4" onclick="toggleWeekday(this)">Чт</button>
+        <button type="button" class="weekday-btn" data-day="5" onclick="toggleWeekday(this)">Пт</button>
+        <button type="button" class="weekday-btn" data-day="6" onclick="toggleWeekday(this)">Сб</button>
+        <button type="button" class="weekday-btn" data-day="0" onclick="toggleWeekday(this)">Вс</button>
+      </div>
+    </div>
+    <div class="form-group" id="folderMonthdayGroup" style="display:none">
+      <div class="form-label">Число месяца</div>
+      <input class="form-input" id="folderMonthDay" type="number" min="1" max="31" placeholder="Например: 1">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('modalFolder')">Отмена</button>
+      <button class="btn btn-primary" onclick="saveFolder()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Выбор папки при сохранении шаблона -->
+<div class="modal-overlay" id="modalChooseFolder" style="z-index:600">
+  <div class="modal">
+    <div class="modal-title">В какую папку добавить?</div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:14px;">Задание: <span id="chooseFolderTaskName" style="color:var(--text);font-weight:600;"></span></p>
+    <div id="chooseFolderList"></div>
+    <div class="modal-actions" style="margin-top:14px;">
+      <button class="btn btn-secondary" onclick="closeModal('modalChooseFolder')">Отмена</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalSync">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">☁️ Синхронизация</div>
+
+    <p style="font-size:13px; color:var(--text2); margin-bottom:20px; line-height:1.6;">
+      Данные сохраняются автоматически после каждого изменения. При открытии на новом устройстве — загружаются из облака.
+    </p>
+
+    <button class="btn btn-orange" id="btnLoadCloud" style="width:100%; padding:13px; font-size:14px; margin-bottom:10px;" onclick="loadFromCloud()">
+      ⬇️ Принудительно загрузить из облака
+    </button>
+
+    <button class="btn btn-danger" style="width:100%; padding:11px; font-size:13px; margin-bottom:20px;" onclick="resetToken()">
+      🔑 Сбросить токен
+    </button>
+
+    <div id="syncStatus" style="display:none; font-size:12px; text-align:center; padding:8px; border-radius:8px; margin-bottom:10px;"></div>
+
+    <div class="modal-actions" style="margin-top:4px;">
+      <button class="btn btn-secondary" onclick="closeModal('modalSync')">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<!-- Окно невыполненных заданий -->
+<div class="fullscreen-overlay" id="overlayIncomplete">
+  <div class="fullscreen-header">
+    <button class="btn btn-secondary btn-sm" onclick="closeIncompleteModal()">← Назад</button>
+    <div style="font-size: 16px; font-weight: 700; flex:1; text-align:center;">⚠️ Невыполненные задания</div>
+    <div id="incompleteTotalBadge" style="font-size: 12px; color: var(--red); min-width: 40px; text-align:right;"></div>
+  </div>
+  <div class="fullscreen-body">
+    <div class="period-tabs">
+      <button class="period-tab active" onclick="setIncompletePeriod(7, this)">7 дней</button>
+      <button class="period-tab" onclick="setIncompletePeriod(30, this)">30 дней</button>
+      <button class="period-tab" onclick="setIncompletePeriod(0, this)">Всё время</button>
+    </div>
+    <div id="incompleteCatFilter" class="cat-pills"></div>
+    <div id="incompleteList"></div>
+  </div>
+</div>
+
+<!-- ===== МОДУЛЬ УСЛУГИ ===== -->
+<div class="services-module" id="servicesModule">
+  <div class="svc-header">
+    <div class="svc-header-icon">🧾</div>
+    <div class="svc-title" id="svcHeaderTitle">Услуги</div>
+    <div class="svc-actions" id="svcHeaderActions"></div>
+    <button class="btn btn-secondary btn-sm" onclick="closeServicesModule()" style="margin-left:6px;">✕ Закрыть</button>
+  </div>
+  <div class="svc-breadcrumb" id="svcBreadcrumb"></div>
+  <div class="svc-body" id="svcBody"></div>
+</div>
+
+<!-- Модал: новый/копировать месяц -->
+<div class="modal-overlay" id="svcModalMonth" style="z-index:700">
+  <div class="modal">
+    <div class="modal-title" id="svcModalMonthTitle">Новый месяц</div>
+    <div class="form-group">
+      <div class="form-label">Месяц</div>
+      <div class="svc-month-grid" id="svcMonthGrid"></div>
+    </div>
+    <div class="form-group">
+      <div class="form-label">Год</div>
+      <input class="form-input" id="svcMonthYear" type="number" min="2020" max="2099">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeSvcModal('svcModalMonth')">Отмена</button>
+      <button class="btn btn-primary" onclick="svcSaveMonth()">Создать</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модал: копировать месяц -->
+<div class="modal-overlay" id="svcModalCopyMonth" style="z-index:700">
+  <div class="modal">
+    <div class="modal-title">Скопировать месяц</div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:14px;">Копируем: <span id="svcCopyFromName" style="color:var(--text);font-weight:600;"></span></p>
+    <label class="svc-copy-option"><input type="radio" name="svcCopyMode" value="keep" checked style="margin-top:2px;accent-color:#a78bfa"><div><div style="font-size:13px;font-weight:500;">С суммами</div><div style="font-size:11px;color:var(--text3);margin-top:2px;">Суммы прошлого месяца сохранятся</div></div></label>
+    <label class="svc-copy-option"><input type="radio" name="svcCopyMode" value="reset" style="margin-top:2px;accent-color:#a78bfa"><div><div style="font-size:13px;font-weight:500;">Без сумм</div><div style="font-size:11px;color:var(--text3);margin-top:2px;">Суммы будут пустыми</div></div></label>
+    <div class="form-group" style="margin-top:14px;">
+      <div class="form-label">Новый месяц</div>
+      <div class="svc-month-grid" id="svcCopyMonthGrid"></div>
+    </div>
+    <div class="form-group">
+      <div class="form-label">Год</div>
+      <input class="form-input" id="svcCopyMonthYear" type="number" min="2020" max="2099">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeSvcModal('svcModalCopyMonth')">Отмена</button>
+      <button class="btn btn-primary" onclick="svcExecuteCopyMonth()">Скопировать</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модал: объект -->
+<div class="modal-overlay" id="svcModalObject" style="z-index:700">
+  <div class="modal">
+    <div class="modal-title" id="svcModalObjectTitle">Новый объект</div>
+    <div class="form-group">
+      <div class="form-label">Название</div>
+      <input class="form-input" id="svcObjectName" placeholder="Например: Офис на Соборной">
+    </div>
+    <div class="form-group">
+      <div class="form-label">Иконка (эмодзи)</div>
+      <input class="form-input" id="svcObjectIcon" placeholder="🏢" maxlength="2">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeSvcModal('svcModalObject')">Отмена</button>
+      <button class="btn btn-primary" onclick="svcSaveObject()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модал: услуга -->
+<div class="modal-overlay" id="svcModalService" style="z-index:700">
+  <div class="modal">
+    <div class="modal-title" id="svcModalServiceTitle">Новая услуга</div>
+    <div class="form-group">
+      <div class="form-label">Название</div>
+      <input class="form-input" id="svcServiceName" placeholder="Например: Аренда помещения">
+    </div>
+    <div class="form-group">
+      <div class="form-label">Сумма (грн)</div>
+      <input class="form-input" id="svcServiceAmount" type="number" placeholder="0.00" step="0.01">
+    </div>
+    <div class="form-group">
+      <div class="form-label">Заметка</div>
+      <textarea class="form-input" id="svcServiceNote" placeholder="Необязательно..." rows="2" style="resize:vertical;line-height:1.5"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeSvcModal('svcModalService')">Отмена</button>
+      <button class="btn btn-primary" onclick="svcSaveService()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модал: копировать услугу -->
+<div class="modal-overlay" id="svcModalCopyService" style="z-index:700">
+  <div class="modal">
+    <div class="modal-title">Копировать услугу</div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:4px;">Услуга: <span id="svcCopyServiceName" style="color:var(--text);font-weight:600;"></span></p>
+    <p style="font-size:11px;color:var(--text3);margin-bottom:14px;">Будет скопирована как невыполненная</p>
+    <div class="form-group">
+      <div class="form-label">В какой месяц</div>
+      <select class="form-select" id="svcCopyServiceMonth"></select>
+    </div>
+    <div class="form-group">
+      <div class="form-label">В какой объект</div>
+      <select class="form-select" id="svcCopyServiceObject"></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeSvcModal('svcModalCopyService')">Отмена</button>
+      <button class="btn btn-primary" onclick="svcExecuteCopyService()">Скопировать</button>
+    </div>
+  </div>
+</div>
 
 <div class="toast" id="toast"></div>
-<div id="syncIndicator" style="position:fixed; bottom:28px; right:20px; font-size:11px; color:var(--text3); opacity:0; transition:opacity 0.4s; pointer-events:none; z-index:999;"></div>
+
+<!-- Индикатор авто-сохранения -->
+<div id="syncIndicator" style="
+  position:fixed; bottom:28px; right:20px;
+  font-size:11px; color:var(--text3);
+  opacity:0; transition:opacity 0.4s;
+  pointer-events:none; z-index:999;
+"></div>
+
 
 <script src="js/app.js"></script>
 </body>
