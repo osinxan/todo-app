@@ -1,0 +1,2823 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Мои Задачи</title>
+  <!-- Красивая векторная иконка для iOS (iPhone, iPad) -->
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180' width='180' height='180'><defs><linearGradient id='apple-grad' x1='0%25' y1='0%25' x2='0%25' y2='100%25'><stop offset='0%25' stop-color='%2354a7ff'/><stop offset='100%25' stop-color='%233b7aff'/></linearGradient></defs><rect width='180' height='180' rx='40' fill='url(%23apple-grad)'/><rect x='35' y='35' width='110' height='110' rx='28' fill='none' stroke='%23ffffff' stroke-width='7' stroke-opacity='0.4'/><path d='M68 92 L84 108 L114 74' fill='none' stroke='%23ffffff' stroke-width='10' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180' width='180' height='180'><defs><linearGradient id='apple-grad' x1='0%25' y1='0%25' x2='0%25' y2='100%25'><stop offset='0%25' stop-color='%2354a7ff'/><stop offset='100%25' stop-color='%233b7aff'/></linearGradient></defs><rect width='180' height='180' rx='40' fill='url(%23apple-grad)'/><rect x='35' y='35' width='110' height='110' rx='28' fill='none' stroke='%23ffffff' stroke-width='7' stroke-opacity='0.4'/><path d='M68 92 L84 108 L114 74' fill='none' stroke='%23ffffff' stroke-width='10' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+
+<!-- Скрываем рамки браузера: приложение будет открываться на весь экран, как настоящее! -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Мои Задачи">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --bg1: #0a0a0f;
+    --bg2: #0f0f1a;
+    --glass: rgba(255,255,255,0.05);
+    --glass2: rgba(255,255,255,0.08);
+    --glass3: rgba(255,255,255,0.12);
+    --glass-border: rgba(255,255,255,0.10);
+    --glass-border2: rgba(255,255,255,0.18);
+    --text: #f0f4ff;
+    --text2: rgba(200,215,255,0.55);
+    --text3: rgba(200,215,255,0.28);
+    --accent: #4fa3ff;
+    --green: #34d85c;
+    --orange: #ff9f40;
+    --red: #ff5e57;
+    --radius: 18px;
+    --radius2: 13px;
+    --radius3: 9px;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg1);
+    color: var(--text);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  body::before, body::after {
+    content:''; position:fixed; border-radius:50%; pointer-events:none; z-index:0;
+    filter: blur(90px);
+  }
+  body::before {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(60,100,255,0.12) 0%, transparent 70%);
+    top: -150px; left: -100px;
+  }
+  body::after {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(140,60,255,0.10) 0%, transparent 70%);
+    bottom: -100px; right: -100px;
+  }
+
+  .header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,10,20,0.65);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 14px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .header-left { display:flex; align-items:center; gap:12px; }
+  .header-icon {
+    width: 38px; height: 38px; border-radius: 11px;
+    background: linear-gradient(135deg, rgba(79,163,255,0.6), rgba(140,60,255,0.5));
+    border: 1px solid rgba(255,255,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 2px 16px rgba(79,163,255,0.25);
+  }
+  .header-title { font-size: 18px; font-weight: 600; letter-spacing: -0.4px; }
+  .header-actions { display:flex; gap:8px; z-index:1; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 8px 16px; border-radius: 980px;
+    font-size: 13px; font-weight: 500;
+    border: none; cursor: pointer;
+    transition: all 0.18s ease;
+    font-family: inherit; position: relative; z-index:1;
+  }
+  .btn:active { transform: scale(0.95); }
+  .btn-primary {
+    background: linear-gradient(135deg, rgba(79,163,255,0.85), rgba(100,120,255,0.85));
+    color: #fff; border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 2px 16px rgba(79,163,255,0.3);
+  }
+  .btn-primary:hover {
+    background: linear-gradient(135deg, rgba(79,163,255,1), rgba(100,120,255,1));
+    box-shadow: 0 4px 20px rgba(79,163,255,0.45);
+  }
+  .btn-secondary {
+    background: var(--glass2); color: var(--text);
+    border: 1px solid var(--glass-border); backdrop-filter: blur(10px);
+  }
+  .btn-secondary:hover { background: var(--glass3); border-color: var(--glass-border2); }
+  .btn-orange {
+    background: rgba(255,159,64,0.12); color: var(--orange);
+    border: 1px solid rgba(255,159,64,0.2);
+  }
+  .btn-orange:hover { background: rgba(255,159,64,0.22); border-color: rgba(255,159,64,0.3); }
+  .btn-danger {
+    background: rgba(255,94,87,0.12); color: var(--red);
+    border: 1px solid rgba(255,94,87,0.2);
+  }
+  .btn-danger:hover { background: rgba(255,94,87,0.22); }
+  .btn-sm { padding: 5px 12px; font-size: 12px; }
+  .btn-icon { padding: 5px 8px; font-size: 11px; }
+
+  /* Стили для разделения мобильных и компьютерных кнопок */
+  .mobile-only { display: none !important; }
+  .desktop-only { display: inline-flex !important; }
+
+  .container { max-width: 650px; margin: 0 auto; padding: 22px 20px 80px; position:relative; z-index:1; }
+
+  .filter-bar {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+    background: var(--glass); border: 1px solid var(--glass-border);
+    padding: 10px 14px; border-radius: var(--radius2);
+    margin-bottom: 20px; backdrop-filter: blur(16px);
+  }
+  .date-input-nav {
+    background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border);
+    color: var(--text); padding: 6px 12px; border-radius: var(--radius3);
+    font-family: inherit; font-size: 13px; outline: none; cursor: pointer;
+  }
+
+  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+  .stat-card {
+    background: var(--glass); border: 1px solid var(--glass-border);
+    border-radius: var(--radius2); padding: 12px 14px;
+    backdrop-filter: blur(16px); text-align: center;
+    cursor: default;
+  }
+  .stat-card.clickable { cursor: pointer; transition: background 0.15s; }
+  .stat-card.clickable:hover { background: var(--glass2); border-color: var(--glass-border2); }
+
+  .stat-val { font-size: 20px; font-weight: 700; }
+  .stat-label { font-size: 10px; color: var(--text3); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .task-list { display: flex; flex-direction: column; gap: 8px; }
+  .task-item {
+    background: var(--glass); border: 1px solid var(--glass-border);
+    border-radius: var(--radius2); padding: 14px;
+    display: flex; align-items: center; gap: 12px;
+    backdrop-filter: blur(20px); transition: all 0.2s;
+    position: relative; animation: slideIn 0.2s ease both;
+  }
+  .task-item:hover { border-color: var(--glass-border2); box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+
+  .checkbox-wrapper { display: flex; align-items: center; cursor: pointer; }
+  .custom-checkbox {
+    width: 20px; height: 20px; border-radius: 50%;
+    border: 2px solid var(--text3); position: relative;
+    transition: all 0.18s ease; flex-shrink: 0;
+  }
+  .task-item.completed .custom-checkbox { background: var(--green); border-color: var(--green); }
+  .task-item.completed .custom-checkbox::after {
+    content: '✓'; position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%); color: #fff; font-size: 11px; font-weight: bold;
+  }
+
+  .task-content { flex: 1; min-width: 0; cursor: pointer; }
+  .task-title { font-size: 14px; font-weight: 500; transition: color 0.18s, text-decoration 0.18s; }
+  .task-item.completed .task-title { color: var(--text3); text-decoration: line-through; }
+  .task-meta { display: flex; gap: 8px; align-items: center; margin-top: 4px; font-size: 11px; color: var(--text2); flex-wrap: wrap; }
+  .task-tag {
+    padding: 1px 6px; border-radius: 4px; background: rgba(255,255,255,0.06);
+    border: 1px solid var(--glass-border); font-size: 10px; text-transform: uppercase;
+  }
+
+  .task-actions { opacity: 0; pointer-events: none; transition: opacity 0.15s ease; display: flex; gap: 4px; }
+  .task-item:hover .task-actions { opacity: 1; pointer-events: auto; }
+  @media (hover: none) { .task-actions { opacity: 1; pointer-events: auto; } }
+
+  .btn-blue {
+    background: rgba(79,163,255,0.12); color: var(--accent);
+    border: 1px solid rgba(79,163,255,0.2);
+  }
+  .btn-blue:hover { background: rgba(79,163,255,0.22); }
+
+  .btn-green {
+    background: rgba(52,216,92,0.12); color: var(--green);
+    border: 1px solid rgba(52,216,92,0.2);
+  }
+  .btn-green:hover { background: rgba(52,216,92,0.22); }
+
+  .task-time {
+    padding: 1px 6px; border-radius: 4px; background: rgba(52,216,92,0.10);
+    border: 1px solid rgba(52,216,92,0.25); font-size: 10px; color: var(--green);
+    white-space: nowrap;
+  }
+  .task-time.in-progress { background: rgba(255,159,64,0.10); border-color: rgba(255,159,64,0.25); color: var(--orange); }
+
+  .time-row { display: flex; gap: 10px; }
+  .time-row .form-group { flex: 1; margin-bottom: 0; }
+  .time-field-wrap { display: flex; gap: 6px; align-items: center; }
+  .time-now-btn {
+    flex-shrink: 0; padding: 8px 10px; border-radius: var(--radius3);
+    background: var(--glass2); border: 1px solid var(--glass-border); color: var(--text2);
+    font-size: 11px; cursor: pointer; font-family: inherit;
+  }
+  .time-now-btn:hover { background: var(--glass3); color: var(--text); }
+
+  /* ШАБЛОНЫ — ПАПКИ */
+  .tpl-folder {
+    background: var(--glass); border: 1px solid var(--glass-border);
+    border-radius: var(--radius2); margin-bottom: 10px; overflow: hidden; transition: all 0.15s;
+  }
+  .tpl-folder:hover { border-color: var(--glass-border2); }
+  .tpl-folder-header {
+    display: flex; align-items: center; gap: 10px; padding: 12px 14px;
+    cursor: pointer; user-select: none;
+  }
+  .tpl-folder-icon { font-size: 16px; flex-shrink: 0; }
+  .tpl-folder-name { flex: 1; font-size: 14px; font-weight: 600; }
+  .tpl-folder-meta { display: flex; gap: 5px; align-items: center; }
+  .tpl-folder-count { font-size: 11px; color: var(--text3); }
+  .tpl-folder-chevron { font-size: 11px; color: var(--text3); transition: transform 0.2s; }
+  .tpl-folder.open .tpl-folder-chevron { transform: rotate(90deg); }
+  .tpl-folder-body { display: none; border-top: 1px solid var(--glass-border); padding: 10px 14px; }
+  .tpl-folder.open .tpl-folder-body { display: block; }
+  .tpl-folder-actions { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+  .tpl-task-item {
+    display: flex; align-items: center; gap: 8px; padding: 8px 10px;
+    background: rgba(255,255,255,0.03); border-radius: var(--radius3);
+    margin-bottom: 6px; font-size: 13px; flex-wrap: wrap;
+  }
+  .tpl-task-name { flex: 1; min-width: 120px; }
+  .tpl-task-tag { font-size: 10px; color: var(--text3); padding: 1px 6px; border-radius: 4px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); text-transform: uppercase; }
+  .tpl-task-actions { display: flex; gap: 4px; margin-left: auto; }
+  .templates-empty { text-align: center; padding: 20px; color: var(--text3); font-size: 13px; }
+  .template-repeat-badge { font-size: 10px; padding: 1px 7px; border-radius: 4px; text-transform: uppercase; font-weight: 600; white-space: nowrap; }
+  .badge-daily { background: rgba(52,216,92,0.1); color: var(--green); border: 1px solid rgba(52,216,92,0.2); }
+  .badge-weekly { background: rgba(79,163,255,0.1); color: var(--accent); border: 1px solid rgba(79,163,255,0.2); }
+  .badge-monthly { background: rgba(255,159,64,0.1); color: var(--orange); border: 1px solid rgba(255,159,64,0.2); }
+  .badge-manual { background: rgba(255,255,255,0.05); color: var(--text3); border: 1px solid var(--glass-border); }
+
+  /* Выбор дней недели */
+  .weekday-picker { display: flex; gap: 5px; flex-wrap: wrap; }
+  .weekday-btn {
+    width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--glass-border);
+    background: var(--glass); color: var(--text2); font-size: 11px; font-weight: 600;
+    cursor: pointer; font-family: inherit; transition: all 0.15s; text-align: center; line-height: 34px; padding: 0;
+  }
+  .weekday-btn.active { background: rgba(79,163,255,0.2); border-color: rgba(79,163,255,0.5); color: var(--accent); }
+
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(5,5,15,0.7); backdrop-filter: blur(12px);
+    display: flex; align-items: flex-start; justify-content: center;
+    padding-top: 60px;
+    opacity: 0; pointer-events: none; transition: opacity 0.22s;
+    will-change: opacity;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: rgba(18,18,30,0.92); backdrop-filter: blur(40px) saturate(200%);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border2);
+    width: calc(100% - 32px); max-width: 500px; padding: 22px;
+    transform: translateY(-20px); transition: transform 0.32s cubic-bezier(.25,.72,0,1);
+    max-height: calc(100vh - 80px); overflow-y: auto; scrollbar-width: none;
+    will-change: transform;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+  .modal::-webkit-scrollbar { display: none; }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-handle { display: none; }
+  .modal-title { font-size: 17px; font-weight: 700; margin-bottom: 18px; }
+
+  /* Полноэкранное окно невыполненных */
+  .fullscreen-overlay {
+    position: fixed; inset: 0; z-index: 500;
+    background: var(--bg1);
+    display: flex; flex-direction: column;
+    opacity: 0; pointer-events: none; transition: opacity 0.22s;
+  }
+  .fullscreen-overlay.open { opacity: 1; pointer-events: all; }
+  .fullscreen-header {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(10,10,20,0.85); backdrop-filter: blur(24px);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 14px 20px; display: flex; align-items: center; gap: 12px;
+  }
+  .fullscreen-body { flex: 1; overflow-y: auto; padding: 20px; max-width: 650px; width: 100%; margin: 0 auto; scrollbar-width: none; }
+  .fullscreen-body::-webkit-scrollbar { display: none; }
+  .period-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+  .period-tab {
+    padding: 6px 16px; border-radius: 980px; font-size: 12px; font-weight: 500;
+    border: 1px solid var(--glass-border); background: var(--glass); color: var(--text2);
+    cursor: pointer; transition: all 0.15s; font-family: inherit;
+  }
+  .period-tab.active { background: rgba(79,163,255,0.15); border-color: rgba(79,163,255,0.4); color: var(--accent); }
+  .day-group { margin-bottom: 20px; }
+  .day-group-header {
+    font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase;
+    letter-spacing: 1px; margin-bottom: 8px; padding: 0 2px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .day-group-count { background: rgba(255,94,87,0.12); color: var(--red); border: 1px solid rgba(255,94,87,0.2); padding: 1px 8px; border-radius: 980px; font-size: 10px; }
+  .overdue-label { color: var(--red); font-size: 10px; margin-left: 6px; }
+
+  .form-group { margin-bottom: 14px; }
+  .form-label { display: block; font-size: 11px; font-weight: 600; color: var(--text3); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .form-input, .form-select {
+    width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+    border-radius: var(--radius3); padding: 11px 13px; color: var(--text); font-size: 14px; font-family: inherit; outline: none;
+  }
+  .form-input:focus, .form-select:focus { border-color: rgba(79,163,255,0.5); }
+  .form-select option { background: #1a1a2e; }
+
+  /* Поле ввода задания — многострочное */
+  #taskName {
+    min-height: 80px; resize: vertical;
+    display: block; line-height: 1.5;
+  }
+
+  .modal-actions { display: flex; gap: 8px; margin-top: 20px; }
+  .modal-actions .btn { flex: 1; }
+
+  /* АДАПТИВ — мобилка */
+  @media (max-width: 600px) {
+    .desktop-only { display: none !important; }
+    .mobile-only { display: inline-flex !important; }
+
+    .header { padding: 10px 12px; flex-wrap: wrap; gap: 8px; }
+    .header-actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .header-actions .btn { font-size: 11px; padding: 7px 8px; }
+    .container { padding: 14px 12px 80px; }
+    .filter-bar { padding: 8px 10px; gap: 8px; }
+    .stats-row { gap: 6px; }
+    .stat-card { padding: 10px 8px; }
+    .stat-val { font-size: 18px; }
+    .task-item { padding: 12px 10px; gap: 8px; }
+    .task-title { font-size: 13px; }
+    .btn-sm { font-size: 11px; padding: 5px 9px; }
+    .modal-overlay {
+      padding-top: 15px !important;
+    }
+    .modal {
+      padding: 16px !important;
+      max-height: calc(100vh - 30px) !important;
+    }
+    #taskName {
+      min-height: 60px !important;
+    }
+    .form-group {
+      margin-bottom: 10px !important;
+    }
+  }
+
+  .toast {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(16px);
+    background: rgba(30,30,50,0.9); backdrop-filter: blur(16px); border: 1px solid var(--glass-border2);
+    border-radius: 980px; padding: 10px 20px; font-size: 13px; color: var(--text);
+    opacity: 0; transition: all 0.28s; pointer-events: none; z-index: 999;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .empty-state { text-align: center; padding: 44px 20px; color: var(--text3); }
+
+  .checkbox-row {
+    display: flex; align-items: center; gap: 10px; margin-top: 18px;
+    padding: 12px; background: rgba(255,255,255,0.03); border-radius: var(--radius3);
+    border: 1px solid var(--glass-border); cursor: pointer; transition: all 0.15s;
+  }
+  .checkbox-row:hover { background: rgba(255,255,255,0.06); }
+  .checkbox-row .custom-checkbox { width: 22px; height: 22px; }
+
+  /* ===== МОДУЛЬ УСЛУГИ ===== */
+  .services-module {
+    position: fixed; inset: 0; z-index: 600;
+    background: var(--bg1); display: flex; flex-direction: column;
+    opacity: 0; pointer-events: none; transition: opacity 0.22s;
+  }
+  .services-module.open { opacity: 1; pointer-events: all; }
+  .svc-header {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(10,10,20,0.85); backdrop-filter: blur(24px);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 12px 16px; display: flex; align-items: center; gap: 10px;
+    flex-wrap: wrap;
+  }
+  .svc-header-icon {
+    width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0;
+    background: linear-gradient(135deg, rgba(167,139,250,0.6), rgba(79,163,255,0.5));
+    display: flex; align-items: center; justify-content: center; font-size: 16px;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .svc-title { font-size: 16px; font-weight: 700; flex:1; }
+  .svc-actions { display: flex; gap: 6px; margin-left: auto; }
+  .svc-breadcrumb {
+    display: flex; align-items: center; gap: 6px;
+    padding: 10px 16px; font-size: 12px; color: var(--text3);
+    border-bottom: 1px solid var(--glass-border);
+    background: rgba(10,10,20,0.5);
+  }
+  .svc-bc-item { cursor: pointer; transition: color 0.15s; }
+  .svc-bc-item:hover { color: var(--text); }
+  .svc-bc-item.active { color: var(--text2); cursor: default; }
+  .svc-body { flex: 1; overflow-y: auto; padding: 16px; max-width: 650px; width: 100%; margin: 0 auto; }
+
+  .svc-card {
+    background: var(--glass); border: 1px solid var(--glass-border);
+    border-radius: var(--radius2); padding: 14px 16px;
+    display: flex; align-items: center; gap: 12px;
+    cursor: pointer; transition: all 0.18s; margin-bottom: 8px;
+    animation: slideIn 0.2s ease both;
+  }
+  .svc-card:hover { border-color: var(--glass-border2); transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+  .svc-card.locked { opacity: 0.65; }
+  .svc-card-icon {
+    width: 40px; height: 40px; border-radius: 11px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 18px;
+    background: linear-gradient(135deg, rgba(167,139,250,0.15), rgba(79,163,255,0.1));
+    border: 1px solid rgba(167,139,250,0.2);
+  }
+  .svc-card-info { flex: 1; min-width: 0; }
+  .svc-card-name { font-size: 14px; font-weight: 600; }
+  .svc-card-meta { font-size: 11px; color: var(--text3); margin-top: 3px; display: flex; gap: 8px; align-items: center; }
+  .svc-status { font-size: 10px; padding: 2px 8px; border-radius: 980px; font-weight: 600; text-transform: uppercase; }
+  .svc-status-open { background: rgba(52,216,92,0.1); color: var(--green); border: 1px solid rgba(52,216,92,0.2); }
+  .svc-status-closed { background: rgba(255,255,255,0.05); color: var(--text3); border: 1px solid var(--glass-border); }
+  .svc-card-actions { display: flex; gap: 4px; opacity: 0; transition: opacity 0.15s; }
+  .svc-card:hover .svc-card-actions { opacity: 1; }
+  @media (hover: none) { .svc-card-actions { opacity: 1; } }
+
+  .svc-summary {
+    background: var(--glass); border: 1px solid var(--glass-border);
+    border-radius: var(--radius2); padding: 12px 16px;
+    display: flex; gap: 16px; align-items: center; margin-bottom: 16px;
+  }
+  .svc-sum-item { text-align: center; }
+  .svc-sum-val { font-size: 18px; font-weight: 700; }
+  .svc-sum-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 1px; }
+  .svc-sum-divider { width: 1px; height: 28px; background: var(--glass-border); }
+  .svc-sum-total { margin-left: auto; text-align: right; }
+  .svc-sum-total .svc-sum-val { color: var(--orange); }
+
+  .svc-service-item {
+    background: var(--glass); border: 1px solid var(--glass-border);
+    border-radius: var(--radius2); padding: 13px 14px;
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 8px; transition: all 0.18s; animation: slideIn 0.2s ease both;
+  }
+  .svc-service-item:hover { border-color: var(--glass-border2); }
+  .svc-service-item.done { opacity: 0.55; }
+  .svc-service-item.done .svc-svc-name { text-decoration: line-through; color: var(--text3); }
+  .svc-svc-info { flex: 1; min-width: 0; }
+  .svc-svc-name { font-size: 13px; font-weight: 500; }
+  .svc-svc-note { font-size: 11px; color: var(--text3); margin-top: 2px; font-style: italic; }
+  .svc-svc-amt { font-size: 13px; font-weight: 600; color: var(--orange); white-space: nowrap; }
+  .svc-svc-amt.empty { color: var(--text3); font-size: 11px; font-weight: 400; }
+  .svc-svc-actions { display: flex; gap: 4px; opacity: 0; transition: opacity 0.15s; }
+  .svc-service-item:hover .svc-svc-actions { opacity: 1; }
+  @media (hover: none) { .svc-svc-actions { opacity: 1; } }
+
+  .svc-locked-banner {
+    background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);
+    border-radius: var(--radius3); padding: 10px 14px;
+    display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+    font-size: 12px; color: var(--text3); flex-wrap: wrap;
+  }
+  .svc-section-title {
+    font-size: 11px; font-weight: 700; color: var(--text3);
+    text-transform: uppercase; letter-spacing: 1px;
+    margin: 16px 0 8px 2px;
+  }
+  .svc-empty { text-align: center; padding: 50px 20px; color: var(--text3); }
+  .svc-empty-icon { font-size: 38px; margin-bottom: 10px; }
+
+  .svc-month-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; margin-bottom: 4px; }
+  .svc-month-btn {
+    padding: 7px 4px; border-radius: var(--radius3); border: 1px solid var(--glass-border);
+    background: var(--glass); color: var(--text2); font-size: 12px; font-family: inherit;
+    cursor: pointer; transition: all 0.15s; text-align: center;
+  }
+  .svc-month-btn.active { background: rgba(167,139,250,0.15); border-color: rgba(167,139,250,0.4); color: #a78bfa; }
+  .svc-copy-option {
+    display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px;
+    background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--radius3);
+    cursor: pointer; transition: all 0.15s; margin-bottom: 8px;
+  }
+  .svc-copy-option:hover { border-color: var(--glass-border2); }
+
+  @keyframes slideIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  /* КАТЕГОРИИ */
+  .cat-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .cat-pill {
+    padding: 5px 13px; border-radius: 980px; font-size: 12px; font-weight: 500;
+    border: 1px solid var(--glass-border); background: var(--glass); color: var(--text2);
+    cursor: pointer; transition: all 0.15s; font-family: inherit;
+  }
+  .cat-pill:hover { border-color: var(--glass-border2); color: var(--text); }
+  .cat-pill.active { background: rgba(79,163,255,0.15); border-color: rgba(79,163,255,0.4); color: var(--accent); }
+  .cat-manage-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .cat-manage-item {
+    display: flex; align-items: center; gap: 8px; padding: 9px 12px;
+    background: rgba(255,255,255,0.03); border-radius: var(--radius3);
+    border: 1px solid var(--glass-border);
+  }
+  .cat-manage-emoji { font-size: 16px; cursor: pointer; }
+  .cat-manage-name { flex: 1; font-size: 13px; }
+  .cat-manage-actions { display: flex; gap: 4px; }
+  .cat-section-title {
+    font-size: 11px; font-weight: 700; color: var(--text3);
+    text-transform: uppercase; letter-spacing: 1px; margin: 16px 0 8px 2px;
+  }
+  @media (max-width: 768px) {
+    .task-item,
+    .filter-bar,
+    .stat-card,
+    .tpl-folder,
+    .header,
+    .modal,
+    .modal-overlay {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="header-icon">✓</div>
+    <div>
+      <div class="header-title">Мои Задания</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-secondary btn-sm desktop-only" onclick="openSyncModal()">☁️ Синхронизация</button>
+    <button class="btn btn-secondary btn-sm desktop-only" onclick="openCategoriesModal()">🏷️ Категории</button>
+    <button class="btn btn-secondary btn-sm desktop-only" onclick="openTemplatesModal()">📋 Шаблоны</button>
+    <button class="btn btn-danger btn-sm desktop-only" onclick="openIncompleteModal()">⚠️ Долги</button>
+    <button class="btn btn-secondary btn-sm desktop-only" onclick="openServicesModule()">🧾 Услуги</button>
+    <button class="btn btn-secondary btn-sm desktop-only" onclick="openTrashModal()">🗑️ Корзина</button>
+    
+    <!-- Кнопка "Ещё" для телефонов, открывающая удобное всплывающее меню -->
+    <button class="btn btn-secondary btn-sm mobile-only" onclick="openModal('modalMoreMenu')">⚙️ Ещё</button>
+    
+    <button class="btn btn-primary btn-sm" onclick="openAddTask()">+ Дело</button>
+  </div>
+</div>
+
+<div class="container">
+  <div class="filter-bar">
+    <span style="font-size: 13px; color: var(--text2)">День:</span>
+    <input type="date" id="filterDate" class="date-input-nav" onchange="filterTasks()">
+    <button class="btn btn-secondary btn-sm" onclick="setFilterAll()">Все дни</button>
+    <button class="btn btn-secondary btn-sm" onclick="window.location.href='kassa.html'">📒 Реестр</button>
+    <button class="btn btn-orange btn-sm" id="btnTransfer" onclick="openTransferModal()" style="margin-left: auto; display: none;">↷ Перенести дела</button>
+  </div>
+  <div id="mainCatFilter" class="cat-pills" style="display:none;"></div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-val" id="statTotal">0</div>
+      <div class="stat-label">Всего дел</div>
+    </div>
+    <div class="stat-card clickable" onclick="openCompletedModal()">
+      <div class="stat-val" id="statDone" style="color: var(--green)">0</div>
+      <div class="stat-label">Выполнено</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="statLeft">0</div>
+      <div class="stat-label">Осталось</div>
+    </div>
+  </div>
+
+  <div id="taskList" class="task-list"></div>
+  <div id="emptyState" class="empty-state" style="display:none"><p>На этот день задач нет 🗓️</p></div>
+</div>
+
+<div class="modal-overlay" id="modalTask">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modalTaskTitle">Новое задание</div>
+    <div class="form-group">
+      <div class="form-label">Что нужно сделать?</div>
+      <textarea class="form-input" id="taskName" placeholder="Например: Проверить приходы по 1С" rows="3"></textarea>
+    </div>
+    <div class="form-group">
+      <div class="form-label">Дата</div>
+      <input class="form-input" id="taskDate" type="date">
+    </div>
+    <div class="form-group">
+      <div class="form-label">Время выполнения (необязательно)</div>
+      <div class="time-row">
+        <div class="form-group">
+          <div style="font-size:10px; color:var(--text3); margin-bottom:4px;">Начало</div>
+          <div class="time-field-wrap">
+            <input class="form-input" id="taskTimeStart" type="time">
+            <button type="button" class="time-now-btn" onclick="setNowTime('taskTimeStart')">Сейчас</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <div style="font-size:10px; color:var(--text3); margin-bottom:4px;">Окончание</div>
+          <div class="time-field-wrap">
+            <input class="form-input" id="taskTimeEnd" type="time">
+            <button type="button" class="time-now-btn" onclick="setNowTime('taskTimeEnd')">Сейчас</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="form-label">Категории</div>
+      <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="openCategoriesSelector('taskCategoriesWrap', 'selectedCategoriesPreview')">🏷️ Выбрать категории</button>
+        <div id="selectedCategoriesPreview" style="display: flex; flex-wrap: wrap; gap: 4px;"></div>
+      </div>
+    </div>
+    <button class="btn btn-secondary" style="width:100%; margin-bottom: 4px; font-size: 12px;" onclick="saveAsTemplate()">📋 Сохранить как шаблон</button>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('modalTask')">Отмена</button>
+      <button class="btn btn-primary" onclick="saveTask()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalTransfer">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Перенос заданий</div>
+    <div class="form-group">
+      <div class="form-label">На какой день перенести?</div>
+      <input class="form-input" id="transferTargetDate" type="date">
+    </div>
+    <div class="checkbox-row" onclick="toggleTransferCheck()">
+      <div class="custom-checkbox" id="transferCheckUI"></div>
+      <div>
+        <div style="font-size: 14px; font-weight: 500;">Удалить из текущего дня</div>
+        <div style="font-size: 11px; color: var(--text2); margin-top: 2px;">Если убрать крыжик, задания просто скопируются</div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('modalTransfer')">Отмена</button>
+      <button class="btn btn-orange" onclick="executeTransfer()">Выполнить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Перенос одного задания -->
+<div class="modal-overlay" id="modalMoveOne" style="z-index:700">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">↷ Перенести задание</div>
+    <p id="moveOneTaskName" style="font-size: 13px; color: var(--text2); margin-bottom: 16px; font-style: italic;"></p>
+    <div class="form-group">
+      <div class="form-label">На какой день перенести?</div>
+      <input class="form-input" id="moveOneTargetDate" type="date">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('modalMoveOne')">Отмена</button>
+      <button class="btn btn-orange" onclick="executeMoveOne()">Перенести</button>
+    </div>
+  </div>
+</div>
+
+<!-- Шаблоны -->
+<div class="modal-overlay" id="modalTemplates">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">📋 Шаблоны заданий</div>
+
+    <div id="templatesList"></div>
+    <div class="modal-actions" style="margin-top: 16px;">
+      <button class="btn btn-secondary" onclick="closeModal('modalTemplates')">Закрыть</button>
+      <button class="btn btn-secondary" onclick="openAddFolder()">+ Папка</button>
+      <button class="btn btn-primary" onclick="applyMatchingFolders()">➕ Добавить подходящие</button>
+    </div>
+  </div>
+</div>
+
+<!-- Категории -->
+<div class="modal-overlay" id="modalCategories" style="z-index:550">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🏷️ Категории</div>
+    <div style="display:flex; align-items:center; justify-content:flex-end; margin-bottom:10px;">
+      <button class="btn btn-primary btn-sm" onclick="openAddCategory()">+ Категория</button>
+    </div>
+    <div id="categoryManageList" class="cat-manage-list"></div>
+    <div class="modal-actions" style="margin-top: 16px;">
+      <button class="btn btn-secondary" onclick="closeModal('modalCategories')">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<!-- Создание/редактирование категории -->
+<div class="modal-overlay" id="modalCategory" style="z-index:600">
+  <div class="modal">
+    <div class="modal-title" id="modalCategoryTitle">Новая категория</div>
+    <div class="form-group">
+      <div class="form-label">Название</div>
+      <input class="form-input" id="categoryName" placeholder="Например: Работа" onkeydown="if(event.ctrlKey && event.key==='Enter') saveCategory()">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('modalCategory')">Отмена</button>
+      <button class="btn btn-primary" onclick="saveCategory()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Редактирование задания шаблона -->
+<div class="modal-overlay" id="modalEditTplTask" style="z-index:700">
+  <div class="modal">
+    <div class="modal-title">Редактировать задание</div>
+    <div class="form-group">
+      <div class="form-label">Название</div>
+      <textarea class="form-input" id="editTplTaskName" rows="3" onkeydown="if(event.ctrlKey && event.key==='Enter') saveTplTask()"></textarea>
+    </div>
+    <div class="form-group">
+      <div class="form-label">Категории</div>
+      <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="openCategoriesSelector('editTplTaskCategoriesWrap', 'selectedTplCategoriesPreview')">🏷️ Выбрать категории</button>
+        <div id="selectedTplCategoriesPreview" style="display: flex; flex-wrap: wrap; gap: 4px;"></div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('modalEditTplTask')">Отмена</button>
+      <button class="btn btn-primary" onclick="saveTplTask()">Сохранить</button>
+    </div>
+  </div>
+</div>
+  
+<!-- Создание/редактирование папки -->
+<div class="modal-overlay" id="modalFolder" style="z-index:600">
+  <div class="modal">
+    <div class="modal-title" id="modalFolderTitle">Новая папка</div>
+    <div class="form-group">
+      <div class="form-label">Название папки</div>
+      <input class="form-input" id="folderName" placeholder="Например: Каждая среда">
+    </div>
+    <div class="form-group">
+      <div class="form-label">Расписание</div>
+      <select class="form-select" id="folderRepeat" onchange="onFolderRepeatChange()">
+        <option value="manual">Вручную</option>
+        <option value="daily">Каждый день</option>
+        <option value="weekly">По дням недели</option>
+        <option value="monthly">Каждое N-е число</option>
+      </select>
+    </div>
+    <div class="form-group" id="folderWeekdayGroup" style="display:none">
+      <div class="form-label">Дни недели</div>
+      <div class="weekday-picker">
+        <button type="button" class="weekday-btn" data-day="1" onclick="toggleWeekday(this)">Пн</button>
+        <button type="button" class="weekday-btn" data-day="2" onclick="toggleWeekday(this)">Вт</button>
+        <button type="button" class="weekday-btn" data-day="3" onclick="toggleWeekday(this)">Ср</button>
+        <button type="button" class="weekday-btn" data-day="4" onclick="toggleWeekday(this)">Чт</button>
+        <button type="button" class="weekday-btn" data-day="5" onclick="toggleWeekday(this)">Пт</button>
+        <button type="button" class="weekday-btn" data-day="6" onclick="toggleWeekday(this)">Сб</button>
+        <button type="button" class="weekday-btn" data-day="0" onclick="toggleWeekday(this)">Вс</button>
+      </div>
+    </div>
+    <div class="form-group" id="folderMonthdayGroup" style="display:none">
+      <div class="form-label">Число месяца</div>
+      <input class="form-input" id="folderMonthDay" type="number" min="1" max="31" placeholder="Например: 1">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('modalFolder')">Отмена</button>
+      <button class="btn btn-primary" onclick="saveFolder()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Выбор папки при сохранении шаблона -->
+<div class="modal-overlay" id="modalChooseFolder" style="z-index:600">
+  <div class="modal">
+    <div class="modal-title">В какую папку добавить?</div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:14px;">Задание: <span id="chooseFolderTaskName" style="color:var(--text);font-weight:600;"></span></p>
+    <div id="chooseFolderList"></div>
+    <div class="modal-actions" style="margin-top:14px;">
+      <button class="btn btn-secondary" onclick="closeModal('modalChooseFolder')">Отмена</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalSync">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">☁️ Синхронизация</div>
+
+    <p style="font-size:13px; color:var(--text2); margin-bottom:20px; line-height:1.6;">
+      Данные сохраняются автоматически после каждого изменения. При открытии на новом устройстве — загружаются из облака.
+    </p>
+
+    <button class="btn btn-orange" id="btnLoadCloud" style="width:100%; padding:13px; font-size:14px; margin-bottom:10px;" onclick="loadFromCloud()">
+      ⬇️ Принудительно загрузить из облака
+    </button>
+
+    <button class="btn btn-danger" style="width:100%; padding:11px; font-size:13px; margin-bottom:10px;" onclick="resetToken()">
+      🔑 Сбросить токен
+    </button>
+
+    <div style="border-top:1px solid var(--glass-border); margin:14px 0 12px;"></div>
+    <div style="font-size:11px; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px;">Экспорт / Импорт задач</div>
+
+    <button class="btn btn-secondary" style="width:100%; padding:11px; font-size:13px; margin-bottom:8px;" onclick="exportCSV()">
+      📊 Скачать CSV
+    </button>
+    <button class="btn btn-secondary" style="width:100%; padding:11px; font-size:13px; margin-bottom:20px;" onclick="document.getElementById('importCSVInput').click()">
+      📂 Загрузить из CSV
+    </button>
+    <input type="file" id="importCSVInput" accept=".csv" style="display:none" onchange="importCSV(event)">
+
+    <div id="syncStatus" style="display:none; font-size:12px; text-align:center; padding:8px; border-radius:8px; margin-bottom:10px;"></div>
+
+    <div class="modal-actions" style="margin-top:4px;">
+      <button class="btn btn-secondary" onclick="closeModal('modalSync')">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<!-- Окно невыполненных заданий -->
+<div class="fullscreen-overlay" id="overlayIncomplete">
+  <div class="fullscreen-header">
+    <button class="btn btn-secondary btn-sm" onclick="closeIncompleteModal()">← Назад</button>
+    <div style="font-size: 16px; font-weight: 700; flex:1; text-align:center;">⚠️ Невыполненные задания</div>
+    <div id="incompleteTotalBadge" style="font-size: 12px; color: var(--red); min-width: 40px; text-align:right;"></div>
+  </div>
+  <div class="fullscreen-body">
+    <div class="period-tabs">
+      <button class="period-tab" onclick="setIncompletePeriod(7, this)">7 дней</button>
+      <button class="period-tab" onclick="setIncompletePeriod(30, this)">30 дней</button>
+      <button class="period-tab active" onclick="setIncompletePeriod(0, this)">Всё время</button>
+    </div>
+    <div id="incompleteCatFilter" class="cat-pills"></div>
+    <div id="incompleteList"></div>
+  </div>
+</div>
+
+<!-- ===== МОДУЛЬ УСЛУГИ ===== -->
+<div class="services-module" id="servicesModule">
+  <div class="svc-header">
+    <div class="svc-header-icon">🧾</div>
+    <div class="svc-title" id="svcHeaderTitle">Услуги</div>
+    <div class="svc-actions" id="svcHeaderActions"></div>
+    <button class="btn btn-secondary btn-sm" onclick="closeServicesModule()" style="margin-left:6px;">✕ Закрыть</button>
+  </div>
+  <div class="svc-breadcrumb" id="svcBreadcrumb"></div>
+  <div class="svc-body" id="svcBody"></div>
+</div>
+
+<!-- Модал: новый/копировать месяц -->
+<div class="modal-overlay" id="svcModalMonth" style="z-index:700">
+  <div class="modal">
+    <div class="modal-title" id="svcModalMonthTitle">Новый месяц</div>
+    <div class="form-group">
+      <div class="form-label">Месяц</div>
+      <div class="svc-month-grid" id="svcMonthGrid"></div>
+    </div>
+    <div class="form-group">
+      <div class="form-label">Год</div>
+      <input class="form-input" id="svcMonthYear" type="number" min="2020" max="2099">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeSvcModal('svcModalMonth')">Отмена</button>
+      <button class="btn btn-primary" onclick="svcSaveMonth()">Создать</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модал: копировать месяц -->
+<div class="modal-overlay" id="svcModalCopyMonth" style="z-index:700">
+  <div class="modal">
+    <div class="modal-title">Скопировать месяц</div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:14px;">Копируем: <span id="svcCopyFromName" style="color:var(--text);font-weight:600;"></span></p>
+    <label class="svc-copy-option"><input type="radio" name="svcCopyMode" value="keep" checked style="margin-top:2px;accent-color:#a78bfa"><div><div style="font-size:13px;font-weight:500;">С суммами</div><div style="font-size:11px;color:var(--text3);margin-top:2px;">Суммы прошлого месяца сохранятся</div></div></label>
+    <label class="svc-copy-option"><input type="radio" name="svcCopyMode" value="reset" style="margin-top:2px;accent-color:#a78bfa"><div><div style="font-size:13px;font-weight:500;">Без сумм</div><div style="font-size:11px;color:var(--text3);margin-top:2px;">Суммы будут пустыми</div></div></label>
+    <div class="form-group" style="margin-top:14px;">
+      <div class="form-label">Новый месяц</div>
+      <div class="svc-month-grid" id="svcCopyMonthGrid"></div>
+    </div>
+    <div class="form-group">
+      <div class="form-label">Год</div>
+      <input class="form-input" id="svcCopyMonthYear" type="number" min="2020" max="2099">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeSvcModal('svcModalCopyMonth')">Отмена</button>
+      <button class="btn btn-primary" onclick="svcExecuteCopyMonth()">Скопировать</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модал: объект -->
+<div class="modal-overlay" id="svcModalObject" style="z-index:700">
+  <div class="modal">
+    <div class="modal-title" id="svcModalObjectTitle">Новый объект</div>
+    <div class="form-group">
+      <div class="form-label">Название</div>
+      <input class="form-input" id="svcObjectName" placeholder="Например: Офис на Соборной">
+    </div>
+    <div class="form-group">
+      <div class="form-label">Иконка (эмодзи)</div>
+      <input class="form-input" id="svcObjectIcon" placeholder="🏢" maxlength="2">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeSvcModal('svcModalObject')">Отмена</button>
+      <button class="btn btn-primary" onclick="svcSaveObject()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модал: услуга -->
+<div class="modal-overlay" id="svcModalService" style="z-index:700">
+  <div class="modal">
+    <div class="modal-title" id="svcModalServiceTitle">Новая услуга</div>
+    <div class="form-group">
+      <div class="form-label">Название</div>
+      <input class="form-input" id="svcServiceName" placeholder="Например: Аренда помещения">
+    </div>
+    <div class="form-group">
+      <div class="form-label">Сумма (грн)</div>
+      <input class="form-input" id="svcServiceAmount" type="number" placeholder="0.00" step="0.01">
+    </div>
+    <div class="form-group">
+      <div class="form-label">Заметка</div>
+      <textarea class="form-input" id="svcServiceNote" placeholder="Необязательно..." rows="2" style="resize:vertical;line-height:1.5"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeSvcModal('svcModalService')">Отмена</button>
+      <button class="btn btn-primary" onclick="svcSaveService()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модал: копировать услугу -->
+<div class="modal-overlay" id="svcModalCopyService" style="z-index:700">
+  <div class="modal">
+    <div class="modal-title">Копировать услугу</div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:4px;">Услуга: <span id="svcCopyServiceName" style="color:var(--text);font-weight:600;"></span></p>
+    <p style="font-size:11px;color:var(--text3);margin-bottom:14px;">Будет скопирована как невыполненная</p>
+    <div class="form-group">
+      <div class="form-label">В какой месяц</div>
+      <select class="form-select" id="svcCopyServiceMonth"></select>
+    </div>
+    <div class="form-group">
+      <div class="form-label">В какой объект</div>
+      <select class="form-select" id="svcCopyServiceObject"></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeSvcModal('svcModalCopyService')">Отмена</button>
+      <button class="btn btn-primary" onclick="svcExecuteCopyService()">Скопировать</button>
+    </div>
+  </div>
+</div>
+
+<!-- Окно просмотра выполненных заданий -->
+<div class="modal-overlay" id="modalCompleted" style="z-index: 600;">
+  <div class="modal">
+    <div class="modal-title">✅ Выполненные задания</div>
+    <div id="completedList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;"></div>
+    <div id="completedEmpty" style="text-align:center;padding:24px 0;color:var(--text3);font-size:13px;display:none;">Нет выполненных задач</div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('modalCompleted')">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<!-- Красивое iOS-style окно подтверждения -->
+<div class="modal-overlay" id="modalConfirm" style="z-index: 1100; background: rgba(0,0,0,0.5); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);">
+  <div class="modal" style="max-width: 270px; padding: 18px 20px 20px; text-align: center; border-radius: 14px; background: rgba(25, 25, 35, 0.85); border: 1px solid rgba(255, 255, 255, 0.12); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); transform: scale(0.9); transition: transform 0.18s cubic-bezier(0.25, 0.8, 0.25, 1); margin: auto;">
+    <div id="confirmTitle" style="font-size: 17px; font-weight: 600; color: #fff; margin-bottom: 5px; line-height: 1.3;">Подтверждение</div>
+    <div id="confirmMessage" style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 18px; line-height: 1.45; padding: 0 4px;">Вы действительно хотите это сделать?</div>
+    <div style="display: flex; border-top: 1px solid rgba(255,255,255,0.12); margin: 0 -20px -20px -20px;">
+      <button id="btnConfirmCancel" type="button" class="btn" style="flex: 1; background: transparent; border: none; border-right: 1px solid rgba(255,255,255,0.12); color: #0a84ff; font-size: 16px; padding: 13px 0; border-radius: 0 0 0 14px; font-weight: 400; box-shadow: none;">Отмена</button>
+      <button id="btnConfirmOk" type="button" class="btn" style="flex: 1; background: transparent; border: none; color: #ff453a; font-size: 16px; padding: 13px 0; border-radius: 0 0 14px 0; font-weight: 600; box-shadow: none;">Да</button>
+    </div>
+  </div>
+</div>
+  
+<!-- Окно выбора категорий -->
+<div class="modal-overlay" id="modalSelectCategories" style="z-index: 800;">
+  <div class="modal">
+    <div class="modal-title">Выберите категории</div>
+    
+    <!-- Сюда временно помещаются списки пилюль -->
+    <div id="taskCategoriesWrap" style="display:none; flex-wrap:wrap; gap:6px; margin-bottom:20px;"></div>
+    <div id="editTplTaskCategoriesWrap" style="display:none; flex-wrap:wrap; gap:6px; margin-bottom:20px;"></div>
+    
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="closeCategoriesSelector()">Готово</button>
+    </div>
+  </div>
+</div>
+  
+ <!-- КОРЗИНА -->
+<div class="modal-overlay" id="modalTrash">
+  <div class="modal">
+    <div class="modal-title">🗑️ Корзина</div>
+    <div id="trashList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;"></div>
+    <div id="trashEmpty" style="text-align:center;padding:24px 0;color:var(--text3);font-size:13px;display:none;">Корзина пуста</div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('modalTrash')">Закрыть</button>
+      <button class="btn btn-danger" onclick="clearTrash()">🗑️ Очистить всё</button>
+    </div>
+  </div>
+</div> 
+
+<!-- МОБИЛЬНОЕ МЕНЮ "ДОПОЛНИТЕЛЬНО" -->
+<div class="modal-overlay" id="modalMoreMenu">
+  <div class="modal" style="max-width: 320px; padding: 18px;">
+    <div class="modal-title">⚙️ Дополнительно</div>
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <button class="btn btn-secondary" style="justify-content: flex-start; width: 100%; padding: 12px 16px; font-size: 14px;" onclick="closeModal('modalMoreMenu'); openSyncModal()">☁️ Синхронизация</button>
+      <button class="btn btn-secondary" style="justify-content: flex-start; width: 100%; padding: 12px 16px; font-size: 14px;" onclick="closeModal('modalMoreMenu'); openCategoriesModal()">🏷️ Категории</button>
+      <button class="btn btn-secondary" style="justify-content: flex-start; width: 100%; padding: 12px 16px; font-size: 14px;" onclick="closeModal('modalMoreMenu'); openTemplatesModal()">📋 Шаблоны</button>
+      <button class="btn btn-danger" style="justify-content: flex-start; width: 100%; padding: 12px 16px; font-size: 14px;" onclick="closeModal('modalMoreMenu'); openIncompleteModal()">⚠️ Долги</button>
+      <button class="btn btn-secondary" style="justify-content: flex-start; width: 100%; padding: 12px 16px; font-size: 14px;" onclick="closeModal('modalMoreMenu'); openServicesModule()">🧾 Услуги</button>
+      <button class="btn btn-secondary" style="justify-content: flex-start; width: 100%; padding: 12px 16px; font-size: 14px;" onclick="closeModal('modalMoreMenu'); openTrashModal()">🗑️ Корзина</button>
+    </div>
+    <div class="modal-actions" style="margin-top: 16px;">
+      <button class="btn btn-secondary" style="width: 100%;" onclick="closeModal('modalMoreMenu')">Закрыть</button>
+    </div>
+  </div>
+</div>
+  
+<div class="toast" id="toast"></div>
+
+<!-- Индикатор авто-сохранения -->
+<div id="syncIndicator" style="
+  position:fixed; bottom:28px; right:20px;
+  font-size:11px; color:var(--text3);
+  opacity:0; transition:opacity 0.4s;
+  pointer-events:none; z-index:999;
+"></div>
+
+<!-- Стартовый экран ввода токена -->
+<div id="startupOverlay" style="
+  display:none; position:fixed; inset:0; z-index:2000;
+  background:var(--bg1); align-items:center; justify-content:center;
+  flex-direction:column; padding:24px;
+">
+  <div style="max-width:400px; width:100%;">
+    <div style="font-size:32px; text-align:center; margin-bottom:16px;">☁️</div>
+    <div style="font-size:20px; font-weight:700; text-align:center; margin-bottom:8px;">Введите GitHub Token</div>
+    <div style="font-size:13px; color:var(--text2); text-align:center; margin-bottom:24px; line-height:1.6;">
+      Для синхронизации между устройствами нужен Personal Access Token с правом <b>gist</b>.
+    </div>
+    <div style="display:flex; gap:8px; margin-bottom:8px;">
+      <input class="form-input" id="startupTokenInput" type="password" placeholder="github_pat_..." style="flex:1;">
+      <button class="btn btn-secondary" onclick="document.getElementById('startupTokenInput').type = document.getElementById('startupTokenInput').type==='password'?'text':'password'" style="padding:0 12px;">👁</button>
+    </div>
+    <button class="btn btn-primary" style="width:100%; padding:13px; font-size:14px;" onclick="submitToken()">Войти и загрузить данные</button>
+  </div>
+</div>
+
+<script>
+
+let currentPreviewId = null;
+let confirmCallback = null;
+
+function appleConfirm(title, message, isDestructive, onConfirm) {
+  document.getElementById('confirmTitle').textContent = title;
+  document.getElementById('confirmMessage').textContent = message;
+  
+  const okBtn = document.getElementById('btnConfirmOk');
+  if (isDestructive) {
+    okBtn.style.color = '#ff5e57'; // Красный (деструктивный) цвет Apple
+    okBtn.textContent = 'Удалить';
+  } else {
+    okBtn.style.color = '#4fa3ff'; // Привычный синий акцент
+    okBtn.textContent = 'Да';
+  }
+  
+  confirmCallback = onConfirm;
+  openModal('modalConfirm');
+  
+  // Добавим легкий Apple-эффект появления (микро-масштабирование)
+  setTimeout(() => {
+    document.querySelector('#modalConfirm .modal').style.transform = 'scale(1)';
+  }, 10);
+}
+
+// Слушатели кнопок для iOS Confirm
+document.getElementById('btnConfirmCancel').addEventListener('click', () => {
+  document.querySelector('#modalConfirm .modal').style.transform = 'scale(0.9)';
+  closeModal('modalConfirm');
+  confirmCallback = null;
+});
+
+document.getElementById('btnConfirmOk').addEventListener('click', () => {
+  document.querySelector('#modalConfirm .modal').style.transform = 'scale(0.9)';
+  closeModal('modalConfirm');
+  if (confirmCallback) confirmCallback();
+  confirmCallback = null;
+});  
+let currentWrapId = null;
+
+function openCategoriesSelector(wrapId, previewId) {
+  currentWrapId = wrapId;
+  currentPreviewId = previewId;
+  
+  // Скрываем оба списка, показываем только нужный в модальном окне
+  document.getElementById('taskCategoriesWrap').style.display = 'none';
+  document.getElementById('editTplTaskCategoriesWrap').style.display = 'none';
+  document.getElementById(wrapId).style.display = 'flex';
+  
+  openModal('modalSelectCategories');
+}
+
+function closeCategoriesSelector() {
+  closeModal('modalSelectCategories');
+  updateCategoryPreview();
+}
+
+function updateCategoryPreview() {
+  if (!currentWrapId || !currentPreviewId) return;
+  const selected = getSelectedCategoriesFromSelector(currentWrapId);
+  const previewEl = document.getElementById(currentPreviewId);
+  
+  if (selected.length === 0) {
+    previewEl.innerHTML = '<span style="font-size:12px; color:var(--text3)">Не выбрано</span>';
+  } else {
+    previewEl.innerHTML = selected.map(c => `<span class="task-tag">${esc(c)}</span>`).join('');
+  }
+}  
+  
+// ОСНОВНЫЕ ДАННЫЕ
+let todos = JSON.parse(localStorage.getItem('todo_items') || '[]');
+let trash = JSON.parse(localStorage.getItem('todo_trash') || '[]');
+let templates = JSON.parse(localStorage.getItem('todo_templates') || '[]');
+let categories = JSON.parse(localStorage.getItem('todo_categories') || 'null') || [
+  { id: 'cat_1', name: 'Работа' },
+  { id: 'cat_2', name: 'Личное' },
+  { id: 'cat_3', name: 'Важное' },
+  { id: 'cat_4', name: 'Звонки' },
+];
+let deleteFromOldDay = true;
+let editingTaskId = null;
+let movingTaskId = null;
+let editingTemplateId = null;
+let editingCategoryId = null;
+let mainCatFilter = null;   // null = все
+let incompleteCatFilter = null; // null = все
+
+async function init() {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('filterDate').value = today;
+
+  const token = localStorage.getItem('github_token');
+  if (!token) {
+    showTokenScreen();
+    return;
+  }
+  await syncOnStartup(token);
+  render();
+}
+
+function saveToStorage() {
+  localStorage.setItem('todo_items', JSON.stringify(todos));
+  localStorage.setItem('todo_trash', JSON.stringify(trash));
+  localStorage.setItem('todo_templates', JSON.stringify(templates));
+  localStorage.setItem('todo_categories', JSON.stringify(categories));
+  render();
+  autoSaveToCloud();
+}
+
+// РЕНДЕР КАТЕГОРИЙ В МОДАЛЬНЫХ ОКНАХ (МНОЖЕСТВЕННЫЙ ВЫБОР)
+function renderCategorySelector(containerId, activeCats = []) {
+  const wrap = document.getElementById(containerId);
+  wrap.innerHTML = categories.map(c => {
+    const isActive = activeCats.includes(c.name);
+    return `<button type="button" class="cat-pill ${isActive ? 'active' : ''}" onclick="this.classList.toggle('active')">${esc(c.name)}</button>`;
+  }).join('');
+}
+
+function getSelectedCategoriesFromSelector(containerId) {
+  const activeBtns = document.querySelectorAll(`#${containerId} .cat-pill.active`);
+  return Array.from(activeBtns).map(btn => btn.textContent.trim());
+}
+
+// РЕНДЕР И ЛОГИКА ЗАДАЧ
+function render() {
+  const list = document.getElementById('taskList');
+  const empty = document.getElementById('emptyState');
+  const filterDate = document.getElementById('filterDate').value;
+
+  // Сначала фильтруем по дате
+  let filtered = todos;
+  if (filterDate) filtered = filtered.filter(t => t.date === filterDate);
+
+  // Собираем все используемые категории на выбранный день из НЕВЫПОЛНЕННЫХ задач
+  const usedCats = [...new Set(filtered.filter(t => !t.completed).flatMap(t => t.categories || (t.category ? [t.category] : [])).filter(Boolean))];
+  
+  if (mainCatFilter && !usedCats.includes(mainCatFilter)) {
+    mainCatFilter = null;
+  }
+
+  const catFilterEl = document.getElementById('mainCatFilter');
+  if (usedCats.length > 1) {
+    catFilterEl.style.display = 'flex';
+    catFilterEl.innerHTML =
+      `<button class="cat-pill ${mainCatFilter===null?'active':''}" onclick="setMainCatFilter(null)">Все</button>` +
+      usedCats.map(c => {
+        return `<button class="cat-pill ${mainCatFilter===c?'active':''}" onclick="setMainCatFilter('${esc(c)}')">${esc(c)}</button>`;
+      }).join('');
+  } else {
+    catFilterEl.style.display = 'none';
+    mainCatFilter = null;
+  }
+
+  // Применяем фильтр категории к НЕВЫПОЛНЕННЫМ
+  let pending = filtered.filter(t => !t.completed);
+  if (mainCatFilter) {
+    pending = pending.filter(t => {
+      const cats = t.categories || (t.category ? [t.category] : []);
+      return cats.includes(mainCatFilter);
+    });
+  }
+
+  // Выполненные задачи (для статистики и модалки)
+  const completedItems = filtered.filter(t => t.completed);
+  window._completedTasks = completedItems; // сохраняем для открытия модалки
+
+  // Сортируем только невыполненные (можно по дате, но они уже отфильтрованы по дате)
+  pending.sort((a, b) => a.completed - b.completed); // все невыполненные, сортировка не важна
+
+  const btnTransfer = document.getElementById('btnTransfer');
+  if (filterDate && pending.some(t => !t.completed)) {
+    btnTransfer.style.display = 'inline-flex';
+  } else {
+    btnTransfer.style.display = 'none';
+  }
+
+  list.innerHTML = '';
+  if (pending.length === 0) {
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+    pending.forEach(item => {
+      const div = document.createElement('div');
+      div.className = `task-item ${item.completed ? 'completed' : ''}`;
+      
+      let timeHtml = '';
+      if (item.timeStart && item.timeEnd) {
+        const mins = calcDurationMinutes(item.timeStart, item.timeEnd);
+        timeHtml = `<span class="task-time">🕐 ${item.timeStart}–${item.timeEnd} • ${formatDuration(mins)}</span>`;
+      } else if (item.timeStart) {
+        timeHtml = `<span class="task-time in-progress">▶ начато в ${item.timeStart}</span>`;
+      }
+      
+      const startBtnHtml = !item.timeStart
+        ? `<button class="btn btn-green btn-icon btn-sm" title="Начать (зафиксировать время старта)" onclick="quickStartTime('${item.id}', event)">▶</button>`
+        : '';
+      const stopBtnHtml = (item.timeStart && !item.timeEnd)
+        ? `<button class="btn btn-danger btn-icon btn-sm" title="Завершить (зафиксировать время окончания)" onclick="quickStopTime('${item.id}', event)">⏹</button>`
+        : '';
+
+      const itemCats = item.categories || (item.category ? [item.category] : []);
+      const tagsHtml = itemCats.map(c => `<span class="task-tag">${esc(c)}</span>`).join('');
+
+      div.innerHTML = `
+        <div class="checkbox-wrapper" onclick="toggleComplete('${item.id}')"><div class="custom-checkbox"></div></div>
+        <div class="task-content">
+          <div class="task-title">${esc(item.name)}</div>
+          <div class="task-meta">${tagsHtml}<span>📅 ${formatDate(item.date)}</span>${timeHtml}</div>
+        </div>
+        <div class="task-actions">
+          ${startBtnHtml}
+          ${stopBtnHtml}
+          <button class="btn btn-blue btn-icon btn-sm" title="Редактировать" onclick="openEditTask('${item.id}', event)">✏️</button>
+          <button class="btn btn-orange btn-icon btn-sm" title="Перенести" onclick="openMoveOne('${item.id}', event)">↷</button>
+          <button class="btn btn-danger btn-icon btn-sm" onclick="deleteTask('${item.id}', event)">✕</button>
+        </div>
+      `;
+      list.appendChild(div);
+    });
+  }
+  updateStats(filtered); // передаем ВЕСЬ отфильтрованный массив (и выполненные, и нет)
+}
+
+function setMainCatFilter(cat) {
+  mainCatFilter = cat;
+  render();
+}
+
+function updateStats(filteredItems) {
+  const total = filteredItems.length;
+  const done = filteredItems.filter(t => t.completed).length;
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statDone').textContent = done;
+  document.getElementById('statLeft').textContent = total - done;
+}
+
+// Открыть модалку с выполненными
+function openCompletedModal() {
+  const completed = window._completedTasks || [];
+  const list = document.getElementById('completedList');
+  const empty = document.getElementById('completedEmpty');
+  
+  if (completed.length === 0) {
+    list.innerHTML = '';
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+    // Сортируем по дате (сначала свежие)
+    const sorted = [...completed].sort((a, b) => b.date.localeCompare(a.date));
+    list.innerHTML = sorted.map(item => {
+      const itemCats = item.categories || (item.category ? [item.category] : []);
+      const tagsHtml = itemCats.map(c => `<span class="task-tag">${esc(c)}</span>`).join('');
+      let timeInfo = '';
+      if (item.timeStart && item.timeEnd) {
+        const mins = calcDurationMinutes(item.timeStart, item.timeEnd);
+        timeInfo = `🕐 ${item.timeStart}–${item.timeEnd} (${formatDuration(mins)})`;
+      } else if (item.timeStart) {
+        timeInfo = `▶ начато в ${item.timeStart}`;
+      }
+      return `<div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius3);padding:12px;display:flex;align-items:center;gap:10px;">
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:14px;font-weight:500;">${esc(item.name)}</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:3px;">📅 ${formatDate(item.date)} ${tagsHtml} ${timeInfo}</div>
+        </div>
+        <button class="btn btn-green btn-sm btn-icon" title="Восстановить (отменить выполнение)" onclick="uncompleteTask('${item.id}')">↩️</button>
+      </div>`;
+    }).join('');
+  }
+  openModal('modalCompleted');
+}
+
+// Отменить выполнение (восстановить)
+function uncompleteTask(id) {
+  const item = todos.find(t => t.id === id);
+  if (!item) return;
+  item.completed = false;
+  saveToStorage();
+  // Обновим список выполненных, закрыв модалку и открыв заново
+  closeModal('modalCompleted');
+  // Небольшая задержка, чтобы закрытие успело отработать
+  setTimeout(() => {
+    render();
+    openCompletedModal();
+  }, 50);
+  showToast('Задание восстановлено');
+}
+
+function openAddTask() {
+  editingTaskId = null;
+  document.getElementById('modalTaskTitle').textContent = 'Новое задание';
+  document.getElementById('taskName').value = '';
+  document.getElementById('taskDate').value = document.getElementById('filterDate').value || new Date().toISOString().split('T')[0];
+  document.getElementById('taskTimeStart').value = '';
+  document.getElementById('taskTimeEnd').value = '';
+  renderCategorySelector('taskCategoriesWrap', categories[0] ? [categories[0].name] : []);
+  currentWrapId = 'taskCategoriesWrap';
+  currentPreviewId = 'selectedCategoriesPreview';
+  updateCategoryPreview();
+  openModal('modalTask');
+  setTimeout(() => document.getElementById('taskName').focus(), 50);
+}
+
+function openEditTask(id, event) {
+  event.stopPropagation();
+  const item = todos.find(t => t.id === id);
+  if (!item) return;
+  editingTaskId = id;
+  document.getElementById('modalTaskTitle').textContent = 'Редактировать задание';
+  document.getElementById('taskName').value = item.name;
+  document.getElementById('taskDate').value = item.date;
+  document.getElementById('taskTimeStart').value = item.timeStart || '';
+  document.getElementById('taskTimeEnd').value = item.timeEnd || '';
+  const itemCats = item.categories || (item.category ? [item.category] : []);
+  renderCategorySelector('taskCategoriesWrap', itemCats);
+  currentWrapId = 'taskCategoriesWrap';
+  currentPreviewId = 'selectedCategoriesPreview';
+  updateCategoryPreview();
+  openModal('modalTask');
+}
+
+function saveTask() {
+  const name = document.getElementById('taskName').value.trim();
+  const date = document.getElementById('taskDate').value;
+  const selectedCats = getSelectedCategoriesFromSelector('taskCategoriesWrap');
+  const timeStart = document.getElementById('taskTimeStart').value || null;
+  const timeEnd = document.getElementById('taskTimeEnd').value || null;
+  
+  if (!name) { showToast('Введите название задания'); return; }
+  if (!date) { showToast('Выберите дату'); return; }
+  if (selectedCats.length === 0) { showToast('Выберите хотя бы одну категорию'); return; }
+
+  if (editingTaskId) {
+    const item = todos.find(t => t.id === editingTaskId);
+    if (item) { 
+      item.name = name; 
+      item.date = date; 
+      item.categories = selectedCats;
+      item.category = selectedCats[0] || ''; // Для обратной совместимости
+      item.timeStart = timeStart; 
+      item.timeEnd = timeEnd; 
+    }
+    saveToStorage(); closeModal('modalTask'); showToast('Задание обновлено');
+    editingTaskId = null;
+  } else {
+    todos.push({ 
+      id: 'todo_' + Date.now(), 
+      name, 
+      date, 
+      categories: selectedCats, 
+      category: selectedCats[0] || '', // Для обратной совместимости
+      completed: false, 
+      timeStart, 
+      timeEnd 
+    });
+    saveToStorage(); closeModal('modalTask'); showToast('Задание добавлено');
+  }
+}
+
+function toggleComplete(id) {
+  const item = todos.find(t => t.id === id);
+  if (!item) return;
+  item.completed = !item.completed;
+  if (item.completed && item.timeStart && !item.timeEnd) {
+    item.timeEnd = currentTimeStr();
+    showToast(`Готово: с ${item.timeStart} по ${item.timeEnd} (${formatDuration(calcDurationMinutes(item.timeStart, item.timeEnd))})`);
+  }
+  saveToStorage();
+}
+
+function quickStartTime(id, event) {
+  event.stopPropagation();
+  const item = todos.find(t => t.id === id);
+  if (!item) return;
+  item.timeStart = currentTimeStr();
+  item.timeEnd = null;
+  saveToStorage();
+  showToast(`Начато в ${item.timeStart}`);
+}
+
+// Завершить (зафиксировать время окончания)
+function quickStopTime(id, event) {
+  event.stopPropagation();
+  const item = todos.find(t => t.id === id);
+  if (!item) return;
+  item.timeEnd = currentTimeStr();
+  saveToStorage();
+  showToast(`Завершено: с ${item.timeStart} по ${item.timeEnd} (${formatDuration(calcDurationMinutes(item.timeStart, item.timeEnd))})`);
+}
+
+function currentTimeStr() {
+  const d = new Date();
+  return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+}
+
+function setNowTime(fieldId) {
+  document.getElementById(fieldId).value = currentTimeStr();
+}
+
+function calcDurationMinutes(start, end) {
+  const [sh, sm] = start.split(':').map(Number);
+  const [eh, em] = end.split(':').map(Number);
+  let mins = (eh * 60 + em) - (sh * 60 + sm);
+  if (mins < 0) mins += 24 * 60;
+  return mins;
+}
+
+function formatDuration(mins) {
+  if (mins <= 0) return '0 мин';
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  if (h === 0) return `${m} мин`;
+  if (m === 0) return `${h} ч`;
+  return `${h} ч ${m} мин`;
+}
+
+function openTrashModal() {
+  renderTrash();
+  openModal('modalTrash');
+}
+
+function renderTrash() {
+  const list = document.getElementById('trashList');
+  const empty = document.getElementById('trashEmpty');
+  if (!trash.length) {
+    list.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  list.innerHTML = trash.map(item => {
+    const d = new Date(item.deletedAt);
+    const dateStr = d.toLocaleDateString('ru-RU') + ' ' + d.toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'});
+    return `<div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius3);padding:12px;display:flex;align-items:center;gap:10px;">
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:14px;font-weight:500;">${esc(item.name)}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:3px;">📅 ${formatDate(item.date)} · удалено ${dateStr}</div>
+      </div>
+      <button class="btn btn-green btn-sm btn-icon" title="Восстановить" onclick="restoreFromTrash('${item.id}')">↩️</button>
+      <button class="btn btn-danger btn-sm btn-icon" title="Удалить навсегда" onclick="deleteFromTrash('${item.id}')">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function restoreFromTrash(id) {
+  const item = trash.find(t => t.id === id);
+  if (!item) return;
+  const { deletedAt, ...restored } = item;
+  todos.push(restored);
+  trash = trash.filter(t => t.id !== id);
+  saveToStorage();
+  renderTrash();
+  showToast('Задание восстановлено ✓');
+}
+
+function deleteFromTrash(id) {
+  appleConfirm('Удалить навсегда?', 'Это действие нельзя будет отменить, задача сотрется полностью.', true, () => {
+    trash = trash.filter(t => t.id !== id);
+    saveToStorage();
+    renderTrash();
+    showToast('Удалено навсегда');
+  });
+}
+
+function clearTrash() {
+  if (!trash.length) { showToast('Корзина уже пуста'); return; }
+  appleConfirm('Очистить корзину?', `Вы действительно хотите безвозвратно удалить все элементы (${trash.length} шт.)?`, true, () => {
+    trash = [];
+    saveToStorage();
+    renderTrash();
+    showToast('Корзина очищена');
+  });
+}
+  
+function deleteTask(id, event) {
+  if (event) event.stopPropagation();
+  const item = todos.find(t => t.id === id);
+  if (!item) return;
+  
+  appleConfirm('Удалить задачу?', `Перенести задачу "${item.name}" в корзину?`, true, () => {
+    trash.push({ ...item, deletedAt: new Date().toISOString() });
+    todos = todos.filter(t => t.id !== id);
+    saveToStorage();
+    showToast('Перемещено в корзину 🗑️');
+  });
+}  
+
+// ПЕРЕНОС ОДНОГО ЗАДАНИЯ
+function openMoveOne(id, event) {
+  event.stopPropagation();
+  const item = todos.find(t => t.id === id);
+  if (!item) return;
+  movingTaskId = id;
+  document.getElementById('moveOneTaskName').textContent = '«' + item.name + '»';
+  const tomorrow = new Date(item.date);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  document.getElementById('moveOneTargetDate').value = tomorrow.toISOString().split('T')[0];
+  openModal('modalMoveOne');
+}
+
+function executeMoveOne() {
+  const targetDate = document.getElementById('moveOneTargetDate').value;
+  if (!targetDate) { showToast('Выберите дату'); return; }
+  const item = todos.find(t => t.id === movingTaskId);
+  if (!item) return;
+  if (item.date === targetDate) { showToast('Выбрана та же дата'); return; }
+  item.date = targetDate;
+  saveToStorage();
+  closeModal('modalMoveOne');
+  showToast('Задание перенесено');
+  if (window._moveOneCallback) { window._moveOneCallback(); window._moveOneCallback = null; }
+  movingTaskId = null;
+}
+
+// ШАБЛОНЫ
+let editingFolderId = null;
+let pendingTemplateTask = null;
+
+function folderRepeatLabel(folder) {
+  if (folder.repeat === 'daily') return { text: 'Каждый день', cls: 'badge-daily' };
+  if (folder.repeat === 'weekly' && folder.weekdays?.length) {
+    const names = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+    return { text: folder.weekdays.map(d => names[d]).join(', '), cls: 'badge-weekly' };
+  }
+  if (folder.repeat === 'monthly' && folder.monthDay) return { text: `${folder.monthDay}-е число`, cls: 'badge-monthly' };
+  return { text: 'Вручную', cls: 'badge-manual' };
+}
+
+function folderMatchesDate(folder, dateStr) {
+  if (folder.repeat === 'daily') return true;
+  if (folder.repeat === 'weekly' && folder.weekdays?.length) {
+    const [y,m,d] = dateStr.split('-').map(Number);
+    return folder.weekdays.includes(new Date(y,m-1,d).getDay());
+  }
+  if (folder.repeat === 'monthly' && folder.monthDay) {
+    return parseInt(dateStr.split('-')[2]) === folder.monthDay;
+  }
+  return false;
+}
+
+function saveAsTemplate() {
+  const name = document.getElementById('taskName').value.trim();
+  const selectedCats = getSelectedCategoriesFromSelector('taskCategoriesWrap');
+  if (!name) { showToast('Введите название для шаблона'); return; }
+  if (selectedCats.length === 0) { showToast('Выберите хотя бы одну категорию'); return; }
+
+  if (!templates.length) {
+    showToast('Сначала создайте папку в разделе Шаблоны');
+    return;
+  }
+
+  pendingTemplateTask = { 
+    id: 'tsk_' + Date.now(), 
+    name, 
+    categories: selectedCats, 
+    category: selectedCats[0] || '' 
+  };
+  document.getElementById('chooseFolderTaskName').textContent = name;
+
+  const list = document.getElementById('chooseFolderList');
+  list.innerHTML = templates.map(f => {
+    const rl = folderRepeatLabel(f);
+    return `<div class="tpl-task-item" style="cursor:pointer;margin-bottom:8px;" onclick="addTaskToFolder('${f.id}')">
+      <span style="font-size:16px;">📁</span>
+      <span class="tpl-task-name">${esc(f.name)}</span>
+      <span class="template-repeat-badge ${rl.cls}">${rl.text}</span>
+    </div>`;
+  }).join('');
+
+  closeModal('modalTask');
+  openModal('modalChooseFolder');
+}
+
+function addTaskToFolder(folderId) {
+  if (!pendingTemplateTask) return;
+  const folder = templates.find(f => f.id === folderId);
+  if (!folder) return;
+  if (!folder.tasks) folder.tasks = [];
+  folder.tasks.push(pendingTemplateTask);
+  pendingTemplateTask = null;
+  saveToStorage();
+  closeModal('modalChooseFolder');
+  showToast('Задание добавлено в папку!');
+}
+
+function openTemplatesModal() {
+  renderTemplates();
+  openModal('modalTemplates');
+}
+
+function openCategoriesModal() {
+  renderCategoryManage();
+  openModal('modalCategories');
+}
+
+// УПРАВЛЕНИЕ КАТЕГОРИЯМИ
+function renderCategoryManage() {
+  const list = document.getElementById('categoryManageList');
+  if (!categories.length) {
+    list.innerHTML = '<div style="font-size:12px;color:var(--text3);">Категорий пока нет.</div>';
+    return;
+  }
+  list.innerHTML = categories.map(c => `
+    <div class="cat-manage-item">
+      <span class="cat-manage-name">${esc(c.name)}</span>
+      <div class="cat-manage-actions">
+        <button class="btn btn-blue btn-icon btn-sm" onclick="openEditCategory('${c.id}')">✏️</button>
+        <button class="btn btn-danger btn-icon btn-sm" onclick="deleteCategory('${c.id}')">✕</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openAddCategory() {
+  editingCategoryId = null;
+  document.getElementById('modalCategoryTitle').textContent = 'Новая категория';
+  document.getElementById('categoryName').value = '';
+  openModal('modalCategory');
+  setTimeout(() => document.getElementById('categoryName').focus(), 50);
+}
+
+function openEditCategory(id) {
+  const cat = categories.find(c => c.id === id);
+  if (!cat) return;
+  editingCategoryId = id;
+  document.getElementById('modalCategoryTitle').textContent = 'Редактировать категорию';
+  document.getElementById('categoryName').value = cat.name;
+  openModal('modalCategory');
+}
+
+function saveCategory() {
+  const name = document.getElementById('categoryName').value.trim();
+  if (!name) { showToast('Введите название категории'); return; }
+
+  if (editingCategoryId) {
+    const cat = categories.find(c => c.id === editingCategoryId);
+    if (cat) {
+      // Обновляем все задачи с этой категорией
+      todos.forEach(t => { 
+        if (t.categories) {
+          t.categories = t.categories.map(c => c === cat.name ? name : c);
+        }
+        if (t.category === cat.name) t.category = name; 
+      });
+      // Обновляем шаблоны
+      templates.forEach(f => (f.tasks||[]).forEach(t => { 
+        if (t.categories) {
+          t.categories = t.categories.map(c => c === cat.name ? name : c);
+        }
+        if (t.category === cat.name) t.category = name; 
+      }));
+      cat.name = name;
+    }
+    editingCategoryId = null;
+    showToast('Категория обновлена');
+  } else {
+    if (categories.find(c => c.name === name)) { showToast('Такая категория уже есть'); return; }
+    categories.push({ id: 'cat_' + Date.now(), name });
+    showToast('Категория добавлена');
+  }
+  saveToStorage();
+  closeModal('modalCategory');
+  renderCategoryManage();
+}
+
+function deleteCategory(id) {
+  const cat = categories.find(c => c.id === id);
+  if (!cat) return;
+  
+  const inUse = todos.some(t => {
+    const cats = t.categories || (t.category ? [t.category] : []);
+    return cats.includes(cat.name);
+  });
+  
+  const executeDelete = () => {
+    todos.forEach(t => {
+      if (t.categories) t.categories = t.categories.filter(c => c !== cat.name);
+      if (t.category === cat.name) t.category = t.categories?.[0] || '';
+    });
+    templates.forEach(f => (f.tasks||[]).forEach(t => {
+      if (t.categories) t.categories = t.categories.filter(c => c !== cat.name);
+      if (t.category === cat.name) t.category = t.categories?.[0] || '';
+    }));
+    categories = categories.filter(c => c.id !== id);
+    saveToStorage();
+    renderCategoryManage();
+    showToast('Категория удалена');
+  };
+
+  if (inUse) {
+    appleConfirm('Удалить категорию?', `Категория «${cat.name}» используется в активных задачах. Удалить её из них?`, true, executeDelete);
+  } else {
+    appleConfirm('Удалить категорию?', `Вы действительно хотите удалить категорию «${cat.name}»?`, true, executeDelete);
+  }
+}
+
+function renderTemplates() {
+  const list = document.getElementById('templatesList');
+  if (!templates.length) {
+    list.innerHTML = '<div class="templates-empty">Папок пока нет.<br>Нажмите "+ Папка" чтобы создать.</div>';
+    return;
+  }
+  list.innerHTML = templates.map(f => {
+    const rl = folderRepeatLabel(f);
+    const tasks = f.tasks || [];
+    const tasksHtml = tasks.length
+      ? tasks.map(t => {
+          const tCats = t.categories || (t.category ? [t.category] : []);
+          const tagsHtml = tCats.map(c => `<span class="tpl-task-tag">${esc(c)}</span>`).join('');
+          return `<div class="tpl-task-item">
+            <span class="tpl-task-name">${esc(t.name)}</span>
+            <div style="display:flex; gap:4px; flex-wrap:wrap; margin-right:8px;">${tagsHtml}</div>
+            <div class="tpl-task-actions">
+              <button class="btn btn-blue btn-icon btn-sm" onclick="openEditTplTask('${f.id}','${t.id}')">✏️</button>
+              <button class="btn btn-danger btn-icon btn-sm" onclick="deleteTaskFromFolder('${f.id}','${t.id}')">✕</button>
+            </div>
+          </div>`
+        }).join('')
+      : '<div style="font-size:12px;color:var(--text3);padding:4px 0;">Заданий нет. Добавьте через «Сохранить как шаблон».</div>';
+
+    return `<div class="tpl-folder" id="folder_${f.id}">
+      <div class="tpl-folder-header" onclick="toggleFolder('${f.id}')">
+        <span class="tpl-folder-icon">📁</span>
+        <span class="tpl-folder-name">${esc(f.name)}</span>
+        <div class="tpl-folder-meta">
+          <span class="template-repeat-badge ${rl.cls}">${rl.text}</span>
+          <span class="tpl-folder-count">${tasks.length} заделывающих.</span>
+        </div>
+        <span class="tpl-folder-chevron">›</span>
+      </div>
+      <div class="tpl-folder-body">
+        <div class="tpl-folder-actions">
+          <button class="btn btn-primary btn-sm" onclick="applyFolder('${f.id}')">➕ Добавить на день</button>
+          <button class="btn btn-secondary btn-sm" onclick="openEditFolder('${f.id}')">✏️ Изменить</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteFolder('${f.id}')">Удалить папку</button>
+        </div>
+        ${tasksHtml}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleFolder(id) {
+  document.getElementById('folder_' + id)?.classList.toggle('open');
+}
+
+let editingTplFolderId = null, editingTplTaskId = null;
+
+function openEditTplTask(folderId, taskId) {
+  const folder = templates.find(f => f.id === folderId);
+  if (!folder) return;
+  const task = (folder.tasks || []).find(t => t.id === taskId);
+  if (!task) return;
+  editingTplFolderId = folderId;
+  editingTplTaskId = taskId;
+  document.getElementById('editTplTaskName').value = task.name;
+  
+  const tCats = task.categories || (task.category ? [task.category] : []);
+  renderCategorySelector('editTplTaskCategoriesWrap', tCats);
+  currentWrapId = 'editTplTaskCategoriesWrap';
+  currentPreviewId = 'selectedTplCategoriesPreview';
+  updateCategoryPreview();
+  openModal('modalEditTplTask');
+}
+
+function saveTplTask() {
+  const name = document.getElementById('editTplTaskName').value.trim();
+  const selectedCats = getSelectedCategoriesFromSelector('editTplTaskCategoriesWrap');
+  if (!name) { showToast('Введите название'); return; }
+  if (selectedCats.length === 0) { showToast('Выберите хотя бы одну категорию'); return; }
+  
+  const folder = templates.find(f => f.id === editingTplFolderId);
+  if (!folder) return;
+  const task = (folder.tasks || []).find(t => t.id === editingTplTaskId);
+  if (!task) return;
+  
+  task.name = name;
+  task.categories = selectedCats;
+  task.category = selectedCats[0] || '';
+  
+  saveToStorage();
+  closeModal('modalEditTplTask');
+  renderTemplates();
+  const el = document.getElementById('folder_' + editingTplFolderId);
+  if (el) el.classList.add('open');
+  showToast('Задание обновлено');
+}
+  
+function deleteTaskFromFolder(folderId, taskId) {
+  const folder = templates.find(f => f.id === folderId);
+  if (!folder) return;
+  folder.tasks = (folder.tasks || []).filter(t => t.id !== taskId);
+  saveToStorage(); renderTemplates();
+  const el = document.getElementById('folder_' + folderId);
+  if (el) el.classList.add('open');
+  showToast('Задание удалено из папки');
+}
+
+function applyFolder(folderId) {
+  const folder = templates.find(f => f.id === folderId);
+  if (!folder) return;
+  const filterDate = document.getElementById('filterDate').value;
+  if (!filterDate) { showToast('Сначала выберите день в фильтре'); return; }
+  const tasks = folder.tasks || [];
+  if (!tasks.length) { showToast('В папке нет заданий'); return; }
+  let added = 0, skipped = 0;
+  tasks.forEach(t => {
+    const exists = todos.some(td => td.date === filterDate && td.name === t.name);
+    if (exists) { skipped++; return; }
+    
+    const tCats = t.categories || (t.category ? [t.category] : []);
+    todos.push({ 
+      id: 'todo_' + Date.now() + Math.random().toString(36).substring(2,6), 
+      name: t.name, 
+      date: filterDate, 
+      categories: tCats, 
+      category: tCats[0] || '', 
+      completed: false 
+    });
+    added++;
+  });
+  saveToStorage();
+  closeModal('modalTemplates');
+  if (added && skipped) showToast(`Добавлено ${added}, пропущено ${skipped} (уже есть)`);
+  else if (added) showToast(`Добавлено ${added} задани(й)`);
+  else showToast('Все задания уже есть на этот день');
+}
+
+function applyMatchingFolders() {
+  const filterDate = document.getElementById('filterDate').value;
+  if (!filterDate) { showToast('Сначала выберите день в фильтре'); return; }
+  const matched = templates.filter(f => f.repeat !== 'manual' && folderMatchesDate(f, filterDate));
+  if (!matched.length) { showToast('Нет папок с подходящим расписанием для этого дня'); return; }
+  let added = 0, skipped = 0;
+  matched.forEach(f => {
+    (f.tasks || []).forEach(t => {
+      const exists = todos.some(td => td.date === filterDate && td.name === t.name);
+      if (exists) { skipped++; return; }
+      const tCats = t.categories || (t.category ? [t.category] : []);
+      todos.push({ 
+        id: 'todo_' + Date.now() + Math.random().toString(36).substring(2,6), 
+        name: t.name, 
+        date: filterDate, 
+        categories: tCats, 
+        category: tCats[0] || '', 
+        completed: false 
+      });
+      added++;
+    });
+  });
+  saveToStorage();
+  closeModal('modalTemplates');
+  if (added && skipped) showToast(`Добавлено ${added}, пропущено ${skipped} (уже есть)`);
+  else if (added) showToast(`Добавлено ${added} задани(й) из ${matched.length} папок`);
+  else showToast('Все задания уже есть на этот день');
+}
+
+// ПАПКИ — создание/редактирование
+function openAddFolder() {
+  editingFolderId = null;
+  document.getElementById('modalFolderTitle').textContent = 'Новая папка';
+  document.getElementById('folderName').value = '';
+  document.getElementById('folderRepeat').value = 'manual';
+  document.getElementById('folderMonthDay').value = '';
+  document.querySelectorAll('.weekday-btn').forEach(b => b.classList.remove('active'));
+  onFolderRepeatChange();
+  openModal('modalFolder');
+}
+
+function openEditFolder(id) {
+  const folder = templates.find(f => f.id === id);
+  if (!folder) return;
+  editingFolderId = id;
+  document.getElementById('modalFolderTitle').textContent = 'Редактировать папку';
+  document.getElementById('folderName').value = folder.name;
+  document.getElementById('folderRepeat').value = folder.repeat || 'manual';
+  document.getElementById('folderMonthDay').value = folder.monthDay || '';
+  document.querySelectorAll('.weekday-btn').forEach(b => {
+    b.classList.toggle('active', (folder.weekdays || []).includes(parseInt(b.dataset.day)));
+  });
+  onFolderRepeatChange();
+  openModal('modalFolder');
+}
+
+function onFolderRepeatChange() {
+  const val = document.getElementById('folderRepeat').value;
+  document.getElementById('folderWeekdayGroup').style.display = val === 'weekly' ? 'block' : 'none';
+  document.getElementById('folderMonthdayGroup').style.display = val === 'monthly' ? 'block' : 'none';
+}
+
+function toggleWeekday(btn) { btn.classList.toggle('active'); }
+
+function saveFolder() {
+  const name = document.getElementById('folderName').value.trim();
+  const repeat = document.getElementById('folderRepeat').value;
+  if (!name) { showToast('Введите название папки'); return; }
+
+  let weekdays = [], monthDay = null;
+  if (repeat === 'weekly') {
+    weekdays = [...document.querySelectorAll('.weekday-btn.active')].map(b => parseInt(b.dataset.day));
+    if (!weekdays.length) { showToast('Выберите хотя бы один день'); return; }
+  }
+  if (repeat === 'monthly') {
+    monthDay = parseInt(document.getElementById('folderMonthDay').value);
+    if (!monthDay || monthDay < 1 || monthDay > 31) { showToast('Введите число от 1 до 31'); return; }
+  }
+
+  if (editingFolderId) {
+    const folder = templates.find(f => f.id === editingFolderId);
+    if (folder) { folder.name = name; folder.repeat = repeat; folder.weekdays = weekdays; folder.monthDay = monthDay; }
+    editingFolderId = null;
+  } else {
+    templates.push({ id: 'tpl_' + Date.now(), name, repeat, weekdays, monthDay, tasks: [] });
+  }
+  saveToStorage();
+  closeModal('modalFolder');
+  renderTemplates();
+  showToast('Папка сохранена');
+}
+
+function deleteFolder(id) {
+  const folder = templates.find(f => f.id === id);
+  if (!folder) return;
+  appleConfirm('Удалить папку?', `Удалить папку "${folder.name}" и все задания в ней?`, true, () => {
+    templates = templates.filter(f => f.id !== id);
+    saveToStorage(); 
+    renderTemplates();
+    showToast('Папка удалена');
+  });
+}
+
+// ЛОГИКА ПЕРЕНОСА ЗАДАЧ
+function openTransferModal() {
+  const filterDate = document.getElementById('filterDate').value;
+  let nextDay = new Date(filterDate);
+  nextDay.setDate(nextDay.getDate() + 1);
+  document.getElementById('transferTargetDate').value = nextDay.toISOString().split('T')[0];
+  deleteFromOldDay = true;
+  updateTransferCheckboxUI();
+  openModal('modalTransfer');
+}
+
+function toggleTransferCheck() { deleteFromOldDay = !deleteFromOldDay; updateTransferCheckboxUI(); }
+
+function updateTransferCheckboxUI() {
+  const chk = document.getElementById('transferCheckUI');
+  if (deleteFromOldDay) {
+    chk.style.background = 'var(--green)'; chk.style.borderColor = 'var(--green)';
+    chk.innerHTML = '<span style="color:#fff;font-size:12px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-weight:bold;">✓</span>';
+  } else {
+    chk.style.background = 'transparent'; chk.style.borderColor = 'var(--text3)'; chk.innerHTML = '';
+  }
+}
+
+function executeTransfer() {
+  const filterDate = document.getElementById('filterDate').value;
+  const targetDate = document.getElementById('transferTargetDate').value;
+  if (!targetDate) { showToast('Выберите дату переноса'); return; }
+  if (filterDate === targetDate) { showToast('Выбрана та же дата'); return; }
+
+  const tasksToMove = todos.filter(t => t.date === filterDate && !t.completed);
+  let count = tasksToMove.length;
+
+  tasksToMove.forEach(task => {
+    const tCats = task.categories || (task.category ? [task.category] : []);
+    if (deleteFromOldDay) { 
+      task.date = targetDate; 
+    } else {
+      todos.push({ 
+        id: 'todo_' + Date.now() + Math.random().toString(36).substring(2, 7), 
+        name: task.name, 
+        date: targetDate, 
+        categories: tCats, 
+        category: tCats[0] || '', 
+        completed: false 
+      });
+    }
+  });
+
+  document.getElementById('filterDate').value = targetDate;
+  saveToStorage(); closeModal('modalTransfer');
+  showToast(deleteFromOldDay ? `Перенесено: ${count}` : `Скопировано: ${count}`);
+}
+
+// GITHUB GIST СИНХРОНИЗАЦИЯ
+const GIST_ID = '4586ad4369f06a422ecf842e8df5b78b';
+const GIST_URL = `https://api.github.com/gists/${GIST_ID}`;
+const GIST_FILENAME = 'data.json';
+
+function showTokenScreen() {
+  document.getElementById('startupOverlay').style.display = 'flex';
+}
+
+function hideTokenScreen() {
+  document.getElementById('startupOverlay').style.display = 'none';
+}
+
+async function submitToken() {
+  const token = document.getElementById('startupTokenInput').value.trim();
+  if (!token) { alert('Введите токен'); return; }
+  localStorage.setItem('github_token', token);
+  hideTokenScreen();
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('filterDate').value = today;
+  await syncOnStartup(token);
+  render();
+}
+
+async function syncOnStartup(token) {
+  try {
+    const response = await fetch(GIST_URL, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'X-GitHub-Api-Version': '2022-11-28'
+      }
+    });
+    if (!response.ok) return;
+
+    const gist = await response.json();
+    const raw = gist.files?.[GIST_FILENAME]?.content;
+    if (!raw) return;
+
+    const cloudData = JSON.parse(raw);
+    if (!Array.isArray(cloudData.todos)) return;
+
+    const cloudDate = cloudData.savedAt || '';
+    const localDate = localStorage.getItem('last_saved_at') || '';
+
+    if (cloudDate > localDate) {
+      todos = cloudData.todos;
+      templates = cloudData.templates || [];
+      categories = cloudData.categories || categories;
+      svcData = cloudData.svcData || { months: [] };
+      trash = cloudData.trash || [];
+      localStorage.setItem('todo_items', JSON.stringify(todos));
+      localStorage.setItem('todo_templates', JSON.stringify(templates));
+      localStorage.setItem('todo_categories', JSON.stringify(categories));
+      localStorage.setItem('services_data', JSON.stringify(svcData));
+      localStorage.setItem('last_saved_at', cloudDate);
+      if (cloudData.kassaData) {
+        localStorage.setItem('kassa_data2', JSON.stringify(cloudData.kassaData));
+      }
+    }
+  } catch(e) {}
+}
+
+let _autoSaveTimer = null;
+function autoSaveToCloud() {
+  clearTimeout(_autoSaveTimer);
+  _autoSaveTimer = setTimeout(_doAutoSave, 2000);
+}
+
+async function _doAutoSave() {
+  const token = localStorage.getItem('github_token');
+  if (!token) return;
+  try {
+    const now = new Date().toISOString();
+    const kassaData = JSON.parse(localStorage.getItem('kassa_data2') || '{"entries":[],"rkoRef":[]}');
+    const payload = { todos, templates, categories, svcData, kassaData, trash, savedAt: now };
+    const response = await fetch(GIST_URL, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'X-GitHub-Api-Version': '2022-11-28'
+      },
+      body: JSON.stringify({
+        files: { [GIST_FILENAME]: { content: JSON.stringify(payload, null, 2) } }
+      })
+    });
+    if (response.ok) {
+      localStorage.setItem('last_saved_at', now);
+      showSyncIndicator();
+    }
+  } catch(e) {}
+}
+
+function showSyncIndicator() {
+  const el = document.getElementById('syncIndicator');
+  if (!el) return;
+  el.textContent = '☁️ Сохранено';
+  el.style.opacity = '1';
+  clearTimeout(el._hideTimer);
+  el._hideTimer = setTimeout(() => { el.style.opacity = '0'; }, 2000);
+}
+
+function exportCSV() {
+  const rows = [['Дата','День недели','Название','Категории','Выполнено']];
+  const days = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+  const sorted = [...todos].sort((a,b) => a.date > b.date ? 1 : -1);
+  sorted.forEach(t => {
+    const d = new Date(t.date);
+    const tCats = t.categories || (t.category ? [t.category] : []);
+    rows.push([t.date, days[d.getDay()], t.name, tCats.join(', '), t.completed?'Да':'Нет']);
+  });
+  const csv = '\uFEFF' + rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(';')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8'}));
+  a.download = 'tasks_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  showToast('CSV скачан');
+}
+
+function importCSV(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const text = e.target.result.replace(/^\uFEFF/, '');
+      const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+      lines.shift();
+      let added = 0, skipped = 0;
+      lines.forEach(line => {
+        const cols = line.split(';').map(c => c.replace(/^"|"$/g,'').replace(/""/g,'"'));
+        const [date, , name, category, completedStr] = cols;
+        if (!date || !name) return;
+        const exists = todos.some(t => t.date === date && t.name === name);
+        if (exists) { skipped++; return; }
+        
+        const cats = category ? category.split(',').map(c => c.trim()).filter(Boolean) : [];
+        todos.push({
+          id: 'todo_' + Date.now() + Math.random().toString(36).substring(2,6),
+          name, date,
+          categories: cats,
+          category: cats[0] || '',
+          completed: completedStr === 'Да'
+        });
+        added++;
+      });
+      saveToStorage();
+      render();
+      showToast(`Импортировано: ${added} новых, пропущено ${skipped} дублей`);
+    } catch(err) {
+      showToast('Ошибка при чтении CSV');
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+  
+function openSyncModal() {
+  document.getElementById('syncStatus').style.display = 'none';
+  openModal('modalSync');
+}
+
+async function loadFromCloud() {
+  const token = localStorage.getItem('github_token');
+  if (!token) { showToast('Токен не найден'); return; }
+
+  const btn = document.getElementById('btnLoadCloud');
+  btn.textContent = '⏳ Загрузка...'; btn.disabled = true;
+
+  try {
+    const response = await fetch(GIST_URL, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'X-GitHub-Api-Version': '2022-11-28'
+      }
+    });
+
+    if (response.status === 401) throw new Error('Неверный токен');
+    if (!response.ok) throw new Error(`Ошибка сервера: ${response.status}`);
+
+    const gist = await response.json();
+    const raw = gist.files?.[GIST_FILENAME]?.content;
+    if (!raw) throw new Error('Файл data.json не найден в Gist');
+
+    const data = JSON.parse(raw);
+    if (!Array.isArray(data.todos)) throw new Error('Неверный формат данных');
+
+    todos = data.todos;
+    templates = data.templates || [];
+    categories = data.categories || categories;
+    svcData = data.svcData || { months: [] };
+    trash = data.trash || [];
+    localStorage.setItem('todo_items', JSON.stringify(todos));
+    localStorage.setItem('todo_templates', JSON.stringify(templates));
+    localStorage.setItem('todo_categories', JSON.stringify(categories));
+    localStorage.setItem('services_data', JSON.stringify(svcData));
+    localStorage.setItem('last_saved_at', data.savedAt || '');
+    if (data.kassaData) {
+      localStorage.setItem('kassa_data2', JSON.stringify(data.kassaData));
+    }
+    render();
+    closeModal('modalSync');
+    showToast('✓ Данные загружены из облака!');
+  } catch (e) {
+    showToast('✗ ' + e.message);
+  } finally {
+    btn.textContent = '⬇️ Загрузить данные из облака'; btn.disabled = false;
+  }
+}
+
+function resetToken() {
+  if (!confirm('Сбросить токен? Потребуется ввести заново при следующем открытии.')) return;
+  localStorage.removeItem('github_token');
+  closeModal('modalSync');
+  showToast('Токен удалён');
+}
+
+// ОКНО НЕВЫПОЛНЕННЫХ ЗАДАНИЙ
+let incompletePeriodDays = 7;
+
+function openIncompleteModal() {
+  incompletePeriodDays = 0;
+  incompleteCatFilter = null;
+  document.querySelectorAll('.period-tab').forEach((t,i) => t.classList.toggle('active', i === 2));
+  renderIncomplete();
+  document.getElementById('overlayIncomplete').classList.add('open');
+}
+
+function closeIncompleteModal() {
+  document.getElementById('overlayIncomplete').classList.remove('open');
+}
+
+function setIncompletePeriod(days, btn) {
+  incompletePeriodDays = days;
+  document.querySelectorAll('.period-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderIncomplete();
+}
+
+function renderIncomplete() {
+  const today = new Date().toISOString().split('T')[0];
+  let filtered = todos.filter(t => !t.completed);
+
+  if (incompletePeriodDays > 0) {
+    const from = new Date();
+    from.setDate(from.getDate() - incompletePeriodDays + 1);
+    const fromStr = from.toISOString().split('T')[0];
+    filtered = filtered.filter(t => t.date >= fromStr);
+  }
+
+  // Собираем используемые категории для должников
+  const usedCats = [...new Set(filtered.flatMap(t => t.categories || (t.category ? [t.category] : [])).filter(Boolean))];
+  
+  const catFilterEl = document.getElementById('incompleteCatFilter');
+  if (usedCats.length > 1) {
+    catFilterEl.style.display = 'flex';
+    catFilterEl.innerHTML =
+      `<button class="cat-pill ${incompleteCatFilter===null?'active':''}" onclick="setIncompleteCatFilter(null)">Все</button>` +
+      usedCats.map(c => {
+        return `<button class="cat-pill ${incompleteCatFilter===c?'active':''}" onclick="setIncompleteCatFilter('${esc(c)}')">${esc(c)}</button>`;
+      }).join('');
+  } else {
+    catFilterEl.style.display = 'none';
+    incompleteCatFilter = null;
+  }
+
+  // Фильтруем долги по категории
+  if (incompleteCatFilter) {
+    filtered = filtered.filter(t => {
+      const cats = t.categories || (t.category ? [t.category] : []);
+      return cats.includes(incompleteCatFilter);
+    });
+  }
+
+  // Группируем по дате
+  const groups = {};
+  filtered.forEach(t => {
+    if (!groups[t.date]) groups[t.date] = [];
+    groups[t.date].push(t);
+  });
+
+  const sortedDates = Object.keys(groups).sort((a, b) => a.localeCompare(b));
+  const list = document.getElementById('incompleteList');
+  const badge = document.getElementById('incompleteTotalBadge');
+  badge.textContent = filtered.length ? `${filtered.length} задач` : '';
+
+  if (sortedDates.length === 0) {
+    list.innerHTML = `<div style="text-align:center; padding: 60px 20px; color: var(--text3)">
+      <div style="font-size: 40px; margin-bottom: 12px;">✅</div>
+      <div style="font-size: 15px;">Всё выполнено!</div>
+    </div>`;
+    return;
+  }
+
+  list.innerHTML = sortedDates.map(date => {
+    const isOverdue = date < today;
+    const items = groups[date];
+    const dateLabel = formatDateFull(date);
+    return `
+      <div class="day-group">
+        <div class="day-group-header">
+          <span>${dateLabel}${isOverdue ? '<span class="overdue-label">просрочено</span>' : ''}</span>
+          <span class="day-group-count">${items.length}</span>
+        </div>
+        ${items.map(item => {
+          const tCats = item.categories || (item.category ? [item.category] : []);
+          const tagsHtml = tCats.map(c => `<span class="task-tag">${esc(c)}</span>`).join('');
+          return `
+          <div class="task-item" id="inc_${item.id}">
+            <div class="checkbox-wrapper" onclick="incompleteToggle('${item.id}')"><div class="custom-checkbox"></div></div>
+            <div class="task-content">
+              <div class="task-title">${esc(item.name)}</div>
+              <div class="task-meta">${tagsHtml}</div>
+            </div>
+            <div class="task-actions" style="opacity:1; pointer-events:auto;">
+              <button class="btn btn-orange btn-icon btn-sm" title="Перенести" onclick="incompleteMoveOne('${item.id}')">↷</button>
+              <button class="btn btn-danger btn-icon btn-sm" onclick="incompleteDelete('${item.id}')">✕</button>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    `;
+  }).join('');
+}
+
+function setIncompleteCatFilter(cat) {
+  incompleteCatFilter = cat;
+  renderIncomplete();
+}
+
+function incompleteToggle(id) {
+  const item = todos.find(t => t.id === id);
+  if (!item) return;
+  item.completed = true;
+  saveToStorage();
+  renderIncomplete();
+  showToast('Выполнено!');
+}
+
+function incompleteDelete(id) {
+  const item = todos.find(t => t.id === id);
+  if (!item) return;
+  
+  appleConfirm('Удалить задачу?', `Перенести задачу "${item.name}" в корзину?`, true, () => {
+    trash.push({ ...item, deletedAt: new Date().toISOString() });
+    todos = todos.filter(t => t.id !== id);
+    saveToStorage();
+    renderIncomplete();
+    showToast('Перемещено в корзину 🗑️');
+  });
+}
+
+function incompleteMoveOne(id) {
+  const item = todos.find(t => t.id === id);
+  if (!item) return;
+  movingTaskId = id;
+  document.getElementById('moveOneTaskName').textContent = '«' + item.name + '»';
+  const tomorrow = new Date(item.date);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  document.getElementById('moveOneTargetDate').value = tomorrow.toISOString().split('T')[0];
+  window._moveOneCallback = () => renderIncomplete();
+  openModal('modalMoveOne');
+}
+
+function formatDateFull(dateStr) {
+  if (!dateStr) return '';
+  const [y, m, d] = dateStr.split('-');
+  const months = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+  const days = ['вс','пн','вт','ср','чт','пт','сб'];
+  const dt = new Date(+y, +m-1, +d);
+  return `${d} ${months[+m-1]} ${y} (${days[dt.getDay()]})`;
+}
+
+function filterTasks() { mainCatFilter = null; render(); }
+function setFilterAll() { document.getElementById('filterDate').value = ''; mainCatFilter = null; render(); }
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(el => { el.addEventListener('click', e => { if (e.target === el) closeModal(el.id); }); });
+
+// Нажатия клавиш
+document.addEventListener('keydown', e => {
+  if (e.key === 'Insert') {
+    e.preventDefault();
+    openAddTask();
+    return;
+  }
+  if (e.key === 'Escape') {
+    const opened = [...document.querySelectorAll('.modal-overlay.open, .fullscreen-overlay.open')]
+      .filter(el => getComputedStyle(el).pointerEvents !== 'none');
+    if (opened.length) {
+      const top = opened[opened.length - 1];
+      if (top.id === 'overlayIncomplete') closeIncompleteModal();
+      else closeModal(top.id);
+    }
+    return;
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    if (document.getElementById('modalTask').classList.contains('open')) {
+      e.preventDefault();
+      saveTask();
+    }
+  }
+});
+function esc(str) { return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2200); }
+function formatDate(dateStr) { if (!dateStr) return ''; const [y, m, d] = dateStr.split('-'); return `${d}.${m}.${y}`; }
+
+// ==========================================
+// МОДУЛЬ УСЛУГИ
+// ==========================================
+let svcData = JSON.parse(localStorage.getItem('services_data') || 'null') || { months: [] };
+let svcMonthId = null;
+let svcObjectId = null;
+let svcEditMonthId = null;
+let svcEditObjectId = null;
+let svcEditServiceId = null;
+let svcCopyingMonthId = null;
+let svcCopyingServiceId = null;
+let svcSelectedNewMonth = null;
+let svcSelectedCopyMonth = null;
+
+const SVC_MONTHS = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+const SVC_MONTHS_S = ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'];
+
+function svcSave() {
+  localStorage.setItem('services_data', JSON.stringify(svcData));
+  autoSaveToCloud();
+}
+function svcUid() { return '_s' + Math.random().toString(36).substr(2,9); }
+function svcFmt(v) { return (parseFloat(v)||0).toLocaleString('ru',{minimumFractionDigits:0,maximumFractionDigits:2}); }
+
+function openServicesModule() {
+  svcMonthId = null; svcObjectId = null;
+  document.getElementById('servicesModule').classList.add('open');
+  svcRender();
+}
+function closeServicesModule() {
+  document.getElementById('servicesModule').classList.remove('open');
+}
+function openSvcModal(id) { document.getElementById(id).classList.add('open'); }
+function closeSvcModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function svcNavigate(monthId, objectId) {
+  svcMonthId = monthId || null;
+  svcObjectId = objectId || null;
+  svcRender();
+}
+
+function svcRender() {
+  svcRenderBreadcrumb();
+  svcRenderHeader();
+  if (!svcMonthId) svcRenderMonths();
+  else if (!svcObjectId) svcRenderObjects();
+  else svcRenderServices();
+}
+
+function svcRenderBreadcrumb() {
+  const bc = document.getElementById('svcBreadcrumb');
+  const month = svcMonthId ? svcData.months.find(m => m.id === svcMonthId) : null;
+  const obj = (month && svcObjectId) ? month.objects.find(o => o.id === svcObjectId) : null;
+  let html = `<span class="svc-bc-item" onclick="svcNavigate()">Все месяцы</span>`;
+  if (month) {
+    html += `<span style="margin:0 4px">›</span>`;
+    html += obj
+      ? `<span class="svc-bc-item" onclick="svcNavigate('${month.id}')">${SVC_MONTHS[month.month-1]} ${month.year}</span>`
+      : `<span class="svc-bc-item active">${SVC_MONTHS[month.month-1]} ${month.year}</span>`;
+  }
+  if (obj) {
+    html += `<span style="margin:0 4px">›</span><span class="svc-bc-item active">${obj.icon||'🏢'} ${esc(obj.name)}</span>`;
+  }
+  bc.innerHTML = html;
+}
+
+function svcRenderHeader() {
+  const title = document.getElementById('svcHeaderTitle');
+  const actions = document.getElementById('svcHeaderActions');
+  const month = svcMonthId ? svcData.months.find(m => m.id === svcMonthId) : null;
+  const obj = (month && svcObjectId) ? month.objects.find(o => o.id === svcObjectId) : null;
+  if (!svcMonthId) {
+    title.textContent = 'Услуги';
+    actions.innerHTML = `<button class="btn btn-primary btn-sm" onclick="svcOpenAddMonth()">+ Месяц</button>`;
+  } else if (!svcObjectId) {
+    title.textContent = `${SVC_MONTHS[month.month-1]} ${month.year}`;
+    if (month.locked) {
+      actions.innerHTML = `<button class="btn btn-orange btn-sm" onclick="svcUnlockMonth('${month.id}')">🔓 Разблокировать</button><button class="btn btn-secondary btn-sm" onclick="svcOpenCopyMonth('${month.id}')">⎘ Копировать</button>`;
+    } else {
+      actions.innerHTML = `<button class="btn btn-green btn-sm" onclick="svcCloseMonth('${month.id}')">✓ Закрыть</button><button class="btn btn-secondary btn-sm" onclick="svcOpenCopyMonth('${month.id}')">⎘ Копировать</button><button class="btn btn-primary btn-sm" onclick="svcOpenAddObject()">+ Объект</button>`;
+    }
+  } else {
+    title.textContent = `${obj.icon||'🏢'} ${obj.name}`;
+    actions.innerHTML = month.locked ? `<span style="font-size:11px;color:var(--text3)">🔒 Архив</span>` : `<button class="btn btn-primary btn-sm" onclick="svcOpenAddService()">+ Услуга</button>`;
+  }
+}
+
+function svcRenderMonths() {
+  const body = document.getElementById('svcBody');
+  const months = [...svcData.months].sort((a,b) => b.year-a.year||b.month-a.month);
+  if (!months.length) {
+    body.innerHTML = `<div class="svc-empty"><div class="svc-empty-icon">🗓️</div><p style="margin-bottom:14px">Нет месяцев. Создайте первый!</p><button class="btn btn-primary" onclick="svcOpenAddMonth()">+ Новый месяц</button></div>`;
+    return;
+  }
+  body.innerHTML = months.map(m => {
+    const total = m.objects.reduce((s,o)=>s+o.services.length,0);
+    const done = m.objects.reduce((s,o)=>s+o.services.filter(s2=>s2.done).length,0);
+    const amt = m.objects.reduce((s,o)=>s+o.services.reduce((s2,sv)=>s2+(parseFloat(sv.amount)||0),0),0);
+    return `<div class="svc-card ${m.locked?'locked':''}" onclick="svcNavigate('${m.id}')">
+      <div class="svc-card-icon">${m.locked?'🔒':'🗓️'}</div>
+      <div class="svc-card-info">
+        <div class="svc-card-name">${SVC_MONTHS[m.month-1]} ${m.year}</div>
+        <div class="svc-card-meta">
+          <span class="svc-status ${m.locked?'svc-status-closed':'svc-status-open'}">${m.locked?'Архив':'В работе'}</span>
+          <span>${done}/${total} проведено</span>
+          ${amt>0?`<span style="color:var(--orange)">${svcFmt(amt)} грн</span>`:''}
+        </div>
+      </div>
+      <div class="svc-card-actions" onclick="event.stopPropagation()">
+        <button class="btn btn-danger btn-icon btn-sm" onclick="svcDeleteMonth('${m.id}')">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function svcRenderObjects() {
+  const body = document.getElementById('svcBody');
+  const month = svcData.months.find(m => m.id === svcMonthId);
+  if (!month) return;
+  const total = month.objects.reduce((s,o)=>s+o.services.length,0);
+  const done = month.objects.reduce((s,o)=>s+o.services.filter(s2=>s2.done).length,0);
+  const amt = month.objects.reduce((s,o)=>s+o.services.reduce((s2,sv)=>s2+(parseFloat(sv.amount)||0),0),0);
+  let html = '';
+  if (month.locked) html += `<div class="svc-locked-banner">🔒 Месяц в архиве <button class="btn btn-orange btn-sm" style="margin-left:auto" onclick="svcUnlockMonth('${month.id}')">Разблокировать</button></div>`;
+  html += `<div class="svc-summary"><div class="svc-sum-item"><div class="svc-sum-val">${total}</div><div class="svc-sum-label">Фактур</div></div><div class="svc-sum-divider"></div><div class="svc-sum-item"><div class="svc-sum-val" style="color:var(--green)">${done}</div><div class="svc-sum-label">Проведено</div></div><div class="svc-sum-divider"></div><div class="svc-sum-item"><div class="svc-sum-val">${total-done}</div><div class="svc-sum-label">Осталось</div></div><div class="svc-sum-total"><div class="svc-sum-val">${svcFmt(amt)}</div><div class="svc-sum-label">Грн всего</div></div></div>`;
+  if (!month.objects.length) {
+    html += `<div class="svc-empty"><div class="svc-empty-icon">🏢</div><p style="margin-bottom:14px">Нет объектов</p>${!month.locked?`<button class="btn btn-primary" onclick="svcOpenAddObject()">+ Объект</button>`:''}</div>`;
+  } else {
+    html += month.objects.map(o => {
+      const ot = o.services.length, od = o.services.filter(s=>s.done).length;
+      const oa = o.services.reduce((s,sv)=>s+(parseFloat(sv.amount)||0),0);
+      return `<div class="svc-card" onclick="svcNavigate('${month.id}','${o.id}')">
+        <div class="svc-card-icon" style="background:var(--glass2);border-color:var(--glass-border)">${o.icon||'🏢'}</div>
+        <div class="svc-card-info">
+          <div class="svc-card-name">${esc(o.name)}</div>
+          <div class="svc-card-meta"><span>${od}/${ot} проведено</span>${oa>0?`<span style="color:var(--orange)">${svcFmt(oa)} грн</span>`:''}</div>
+        </div>
+        <div class="svc-card-actions" onclick="event.stopPropagation()">
+          ${!month.locked?`<button class="btn btn-secondary btn-icon btn-sm" onclick="svcOpenEditObject('${o.id}')">✏️</button><button class="btn btn-danger btn-icon btn-sm" onclick="svcDeleteObject('${o.id}')">✕</button>`:''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+  body.innerHTML = html;
+}
+
+function svcRenderServices() {
+  const body = document.getElementById('svcBody');
+  const month = svcData.months.find(m => m.id === svcMonthId);
+  const obj = month ? month.objects.find(o => o.id === svcObjectId) : null;
+  if (!obj) return;
+  const svcs = obj.services;
+  const total = svcs.length, done = svcs.filter(s=>s.done).length;
+  const amt = svcs.reduce((s,sv)=>s+(parseFloat(sv.amount)||0),0);
+  let html = '';
+  if (month.locked) html += `<div class="svc-locked-banner">🔒 Архивный месяц — только просмотр.</div>`;
+  html += `<div class="svc-summary"><div class="svc-sum-item"><div class="svc-sum-val">${total}</div><div class="svc-sum-label">Фактур</div></div><div class="svc-sum-divider"></div><div class="svc-sum-item"><div class="svc-sum-val" style="color:var(--green)">${done}</div><div class="svc-sum-label">Проведено</div></div><div class="svc-sum-divider"></div><div class="svc-sum-item"><div class="svc-sum-val">${total-done}</div><div class="svc-sum-label">Осталось</div></div><div class="svc-sum-total"><div class="svc-sum-val">${svcFmt(amt)}</div><div class="svc-sum-label">Грн всего</div></div></div>`;
+  if (!svcs.length) {
+    html += `<div class="svc-empty"><div class="svc-empty-icon">🧾</div><p style="margin-bottom:14px">Нет услуг</p>${!month.locked?`<button class="btn btn-primary" onclick="svcOpenAddService()">+ Услуга</button>`:''}</div>`;
+  } else {
+    const pending = svcs.filter(s=>!s.done), completed = svcs.filter(s=>s.done);
+    if (pending.length) {
+      html += `<div class="svc-section-title">Ожидают проводки</div>`;
+      html += pending.map(sv => svcServiceHTML(sv, month.locked)).join('');
+    }
+    if (completed.length) {
+      html += `<div class="svc-section-title">Проведено</div>`;
+      html += completed.map(sv => svcServiceHTML(sv, month.locked)).join('');
+    }
+  }
+  body.innerHTML = html;
+}
+
+function svcServiceHTML(sv, locked) {
+  return `<div class="svc-service-item ${sv.done?'done':''}">
+    <div class="checkbox-wrapper" ${!locked?`onclick="svcToggle('${sv.id}')"`:''}><div class="custom-checkbox" style="${sv.done?'background:var(--green);border-color:var(--green)':''}"></div></div>
+    <div class="svc-svc-info">
+      <div class="svc-svc-name">${esc(sv.name)}</div>
+      ${sv.note?`<div class="svc-svc-note">${esc(sv.note)}</div>`:''}
+    </div>
+    <div class="${sv.amount?'svc-svc-amt':'svc-svc-amt empty'}">${sv.amount?svcFmt(sv.amount)+' грн':'— грн'}</div>
+    <div class="svc-svc-actions">
+      ${!locked?`<button class="btn btn-secondary btn-icon btn-sm" onclick="svcOpenEditService('${sv.id}')">✏️</button>`:''}
+      <button class="btn btn-orange btn-icon btn-sm" onclick="svcOpenCopyService('${sv.id}')">⎘</button>
+      ${!locked?`<button class="btn btn-danger btn-icon btn-sm" onclick="svcDeleteService('${sv.id}')">✕</button>`:''}
+    </div>
+  </div>`;
+}
+
+function svcBuildMonthGrid(gridId, selectedVal) {
+  document.getElementById(gridId).innerHTML = SVC_MONTHS_S.map((n,i)=>
+    `<button class="svc-month-btn ${selectedVal===i+1?'active':''}" onclick="svcSelectMonth('${gridId}',${i+1},this)">${n}</button>`
+  ).join('');
+}
+function svcSelectMonth(gridId, num, btn) {
+  document.querySelectorAll(`#${gridId} .svc-month-btn`).forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if (gridId==='svcMonthGrid') svcSelectedNewMonth=num;
+  else svcSelectedCopyMonth=num;
+}
+function svcOpenAddMonth() {
+  svcEditMonthId=null;
+  const now=new Date(); svcSelectedNewMonth=now.getMonth()+1;
+  document.getElementById('svcMonthYear').value=now.getFullYear();
+  svcBuildMonthGrid('svcMonthGrid',svcSelectedNewMonth);
+  document.getElementById('svcModalMonthTitle').textContent='Новый месяц';
+  openSvcModal('svcModalMonth');
+}
+function svcSaveMonth() {
+  const year=parseInt(document.getElementById('svcMonthYear').value);
+  if (!svcSelectedNewMonth||!year){showToast('Выберите месяц и год');return;}
+  if (svcData.months.find(m=>m.month===svcSelectedNewMonth&&m.year===year)){showToast('Такой месяц уже есть');return;}
+  svcData.months.push({id:svcUid(),month:svcSelectedNewMonth,year,locked:false,objects:[]});
+  svcSave(); closeSvcModal('svcModalMonth'); svcRender(); showToast('Месяц создан');
+}
+function svcCloseMonth(id) {
+  if (!confirm('Закрыть месяц и отправить в архив?')) return;
+  const m=svcData.months.find(m=>m.id===id); if(m){m.locked=true; svcSave(); svcRender(); showToast('Месяц закрыт');}
+}
+function svcUnlockMonth(id) {
+  if (!confirm('Разблокировать месяц?')) return;
+  const m=svcData.months.find(m=>m.id===id); if(m){m.locked=false; svcSave(); svcRender(); showToast('Разблокировано');}
+}
+function svcDeleteMonth(id) {
+  if (!confirm('Удалить этот месяц и все данные в нём?')) return;
+  svcData.months=svcData.months.filter(m=>m.id!==id); svcSave(); svcNavigate(); showToast('Месяц удалён');
+}
+function svcOpenCopyMonth(id) {
+  svcCopyingMonthId=id;
+  const m=svcData.months.find(m=>m.id===id);
+  document.getElementById('svcCopyFromName').textContent=`${SVC_MONTHS[m.month-1]} ${m.year}`;
+  const next=m.month===12?1:m.month+1, nextY=m.month===12?m.year+1:m.year;
+  svcSelectedCopyMonth=next;
+  document.getElementById('svcCopyMonthYear').value=nextY;
+  svcBuildMonthGrid('svcCopyMonthGrid',next);
+  document.querySelector('input[name="svcCopyMode"][value="keep"]').checked=true;
+  openSvcModal('svcModalCopyMonth');
+}
+function svcExecuteCopyMonth() {
+  const year=parseInt(document.getElementById('svcCopyMonthYear').value);
+  if (!svcSelectedCopyMonth||!year){showToast('Выберите месяц и год');return;}
+  if (svcData.months.find(m=>m.month===svcSelectedCopyMonth&&m.year===year)){showToast('Такой месяц уже есть');return;}
+  const src=svcData.months.find(m=>m.id===svcCopyingMonthId);
+  const keep=document.querySelector('input[name="svcCopyMode"]:checked').value==='keep';
+  svcData.months.push({id:svcUid(),month:svcSelectedCopyMonth,year,locked:false,
+    objects:src.objects.map(o=>({id:svcUid(),name:o.name,icon:o.icon,
+      services:o.services.map(sv=>({id:svcUid(),name:sv.name,note:sv.note||'',amount:keep?sv.amount:'',done:false}))}))});
+  svcSave(); closeSvcModal('svcModalCopyMonth'); svcNavigate(); showToast('Месяць скопійовано');
+}
+
+function svcOpenAddObject() {
+  svcEditObjectId=null;
+  document.getElementById('svcObjectName').value='';
+  document.getElementById('svcObjectIcon').value='🏢';
+  document.getElementById('svcModalObjectTitle').textContent='Новый объект';
+  openSvcModal('svcModalObject');
+}
+function svcOpenEditObject(id) {
+  const m=svcData.months.find(m=>m.id===svcMonthId);
+  const o=m.objects.find(o=>o.id===id);
+  svcEditObjectId=id;
+  document.getElementById('svcObjectName').value=o.name;
+  document.getElementById('svcObjectIcon').value=o.icon||'🏢';
+  document.getElementById('svcModalObjectTitle').textContent='Редактировать объект';
+  openSvcModal('svcModalObject');
+}
+function svcSaveObject() {
+  const name=document.getElementById('svcObjectName').value.trim();
+  const icon=document.getElementById('svcObjectIcon').value.trim()||'🏢';
+  if (!name){showToast('Введите название');return;}
+  const m=svcData.months.find(m=>m.id===svcMonthId);
+  if (svcEditObjectId){const o=m.objects.find(o=>o.id===svcEditObjectId);o.name=name;o.icon=icon;svcEditObjectId=null;}
+  else m.objects.push({id:svcUid(),name,icon,services:[]});
+  svcSave(); closeSvcModal('svcModalObject'); svcRender(); showToast('Объект сохранён');
+}
+function svcDeleteObject(id) {
+  if (!confirm('Удалить объект и все его услуги?')) return;
+  const m=svcData.months.find(m=>m.id===svcMonthId);
+  m.objects=m.objects.filter(o=>o.id!==id); svcSave(); svcRender(); showToast('Объект удалён');
+}
+
+function svcOpenAddService() {
+  svcEditServiceId=null;
+  document.getElementById('svcServiceName').value='';
+  document.getElementById('svcServiceAmount').value='';
+  document.getElementById('svcServiceNote').value='';
+  document.getElementById('svcModalServiceTitle').textContent='Новая услуга';
+  openSvcModal('svcModalService');
+}
+function svcOpenEditService(id) {
+  const m=svcData.months.find(m=>m.id===svcMonthId);
+  const o=m.objects.find(o=>o.id===svcObjectId);
+  const sv=o.services.find(s=>s.id===id);
+  svcEditServiceId=id;
+  document.getElementById('svcServiceName').value=sv.name;
+  document.getElementById('svcServiceAmount').value=sv.amount||'';
+  document.getElementById('svcServiceNote').value=sv.note||'';
+  document.getElementById('svcModalServiceTitle').textContent='Редактировать услугу';
+  openSvcModal('svcModalService');
+}
+function svcSaveService() {
+  const name=document.getElementById('svcServiceName').value.trim();
+  const amount=document.getElementById('svcServiceAmount').value.trim();
+  const note=document.getElementById('svcServiceNote').value.trim();
+  if (!name){showToast('Введите название');return;}
+  const m=svcData.months.find(m=>m.id===svcMonthId);
+  const o=m.objects.find(o=>o.id===svcObjectId);
+  if (svcEditServiceId){const sv=o.services.find(s=>s.id===svcEditServiceId);sv.name=name;sv.amount=amount;sv.note=note;svcEditServiceId=null;}
+  else o.services.push({id:svcUid(),name,amount,note,done:false});
+  svcSave(); closeSvcModal('svcModalService'); svcRender(); showToast('Услуга сохранена');
+}
+function svcToggle(id) {
+  const m=svcData.months.find(m=>m.id===svcMonthId);
+  const o=m.objects.find(o=>o.id===svcObjectId);
+  const sv=o.services.find(s=>s.id===id);
+  sv.done=!sv.done; svcSave(); svcRender();
+}
+function svcDeleteService(id) {
+  if (!confirm('Удалить услугу?')) return;
+  const m=svcData.months.find(m=>m.id===svcMonthId);
+  const o=m.objects.find(o=>o.id===svcObjectId);
+  o.services=o.services.filter(s=>s.id!==id); svcSave(); svcRender(); showToast('Услуга удалена');
+}
+function svcOpenCopyService(id) {
+  const m=svcData.months.find(m=>m.id===svcMonthId);
+  const o=m.objects.find(o=>o.id===svcObjectId);
+  const sv=o.services.find(s=>s.id===id);
+  svcCopyingServiceId=id;
+  document.getElementById('svcCopyServiceName').textContent=sv.name;
+  const monthSel=document.getElementById('svcCopyServiceMonth');
+  const sorted=[...svcData.months].sort((a,b)=>b.year-a.year||b.month-a.month);
+  monthSel.innerHTML=sorted.map(m=>`<option value="${m.id}">${SVC_MONTHS[m.month-1]} ${m.year}${m.locked?' 🔒':''}</option>`).join('');
+  monthSel.onchange=svcUpdateCopyObjects;
+  svcUpdateCopyObjects();
+  openSvcModal('svcModalCopyService');
+}
+function svcUpdateCopyObjects() {
+  const monthId=document.getElementById('svcCopyServiceMonth').value;
+  const m=svcData.months.find(m=>m.id===monthId);
+  const objSel=document.getElementById('svcCopyServiceObject');
+  objSel.innerHTML=m&&m.objects.length
+    ? m.objects.map(o=>`<option value="${o.id}">${o.icon||'🏢'} ${esc(o.name)}</option>`).join('')
+    : '<option value="">— нет объектов —</option>';
+}
+function svcExecuteCopyService() {
+  const monthId=document.getElementById('svcCopyServiceMonth').value;
+  const objId=document.getElementById('svcCopyServiceObject').value;
+  if (!monthId||!objId){showToast('Выберите месяц и объект');return;}
+  const srcM=svcData.months.find(m=>m.id===svcMonthId);
+  const srcO=srcM.objects.find(o=>o.id===svcObjectId);
+  const sv=srcO.services.find(s=>s.id===svcCopyingServiceId);
+  const destM=svcData.months.find(m=>m.id===monthId);
+  const destO=destM.objects.find(o=>o.id===objId);
+  destO.services.push({id:svcUid(),name:sv.name,amount:sv.amount,note:sv.note,done:false});
+  svcSave(); closeSvcModal('svcModalCopyService'); showToast('Услуга скопирована');
+}
+
+document.querySelectorAll('[id^="svcModal"]').forEach(el=>{
+  el.addEventListener('click',e=>{if(e.target===el)closeSvcModal(el.id);});
+});
+
+init();
+</script>
+</body>
+</html>
